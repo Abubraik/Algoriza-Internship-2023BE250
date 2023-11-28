@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vezeeta.Core.Models.Users;
+using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Core.Models
 {
@@ -14,6 +15,7 @@ namespace Vezeeta.Core.Models
         public int bookingId { get; set; }
         public decimal price { get; set; }
         public decimal finalPrice { get; set; }
+        public Status status { get; set; }
 
         public int timeSlotId { get; set; }
         public TimeSlot timeSlot { get; set; }

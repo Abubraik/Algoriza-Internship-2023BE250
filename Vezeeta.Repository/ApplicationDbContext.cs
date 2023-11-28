@@ -22,18 +22,20 @@ namespace Vezeeta.Repository
 
             modelBuilder.Entity<Patient>(e => e.ToTable("Patients"));
             modelBuilder.Entity<Doctor>(e => e.ToTable("Doctors"));
+         
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(e => e.timeSlot)
+                .WithMany()
+                .HasForeignKey(e => e.timeSlotId);
+            #region
             //modelBuilder.Entity<TimeSlot>()
             //    .Property(e => e.startTime)
             //    .HasColumnType("time");
 
             //modelBuilder.Entity<TimeSlot>()
             //    .Property(e => e.endTime)
-                //.HasColumnType("time");
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(e => e.timeSlot)
-                .WithMany()
-                .HasForeignKey(e => e.timeSlotId);
+            //.HasColumnType("time");
 
             //modelBuilder.Entity<Feedback>()
             //    .HasOne(e => e.booking)
@@ -49,6 +51,7 @@ namespace Vezeeta.Repository
             //    .HasOne(b => b.doctor)
             //    .WithMany()
             //    .HasForeignKey(e => e.doctorId);
+            #endregion
         }
 
         public DbSet<Doctor> Doctors { get; set; }
