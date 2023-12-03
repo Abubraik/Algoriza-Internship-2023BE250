@@ -11,8 +11,8 @@ namespace Vezeeta.Core.Models.Users
     {
         public new string? photoPath { get; set; }
 
-        public List<Booking> bookings{ get; set; }
-        public List<Feedback>? feedbacks { get; set; }
+        public virtual List<Booking> bookings{ get; set; }
+        public virtual List<Feedback> feedbacks { get; set; }
 
     }
 }

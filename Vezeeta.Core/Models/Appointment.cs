@@ -9,8 +9,8 @@ namespace Vezeeta.Core.Models
         public int appointmentId{ get; set; }
         public decimal price { get; set; }
 
-        //public int docotorId { get; set; }
-        public Doctor doctor{ get; set; }
-        public List<DaySchedule> daySchedules { get; set; }
+        public string doctorId { get; set; }
+        public virtual Doctor doctor{ get; set; }
+        public virtual List<DaySchedule> daySchedules { get; set; }
     }
 }

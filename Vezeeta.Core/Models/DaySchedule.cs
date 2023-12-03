@@ -7,11 +7,13 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int dayScheduleId { get; set; }
+        [Required]
         public Days dayOfWeek { get; set; }
 
-        public List<TimeSlot> timeSlots { get; set; }
+        public virtual List<TimeSlot>? timeSlots { get; set; }
 
+        [Required]
         public int appointmentId { get; set; }
-        public Appointment appointment { get; set; }
+        public virtual Appointment? appointment { get; set; }
     }
 }

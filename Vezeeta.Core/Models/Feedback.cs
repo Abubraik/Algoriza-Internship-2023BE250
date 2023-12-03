@@ -13,14 +13,19 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int feedbackId { get; set; }
+        [Required]
         public string feedback { get; set; }
+        [Required]
         public int rating { get; set; }
 
+        [Required]
         public int bookingId { get; set; }
-        public Booking booking { get; set; }
-        //public int patientId { get; set; }
-        public Patient patient { get; set; }
-        //public int doctorId { get; set; }
-        public Doctor doctor { get; set; }  
+        public virtual Booking booking { get; set; }
+        [Required]
+        public string patientId { get; set; }
+        public virtual Patient patient { get; set; }
+        [Required]
+        public string doctorId { get; set; }
+        public virtual Doctor doctor { get; set; }  
     }
 }

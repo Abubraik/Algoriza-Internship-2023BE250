@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sevices\Vezeeta.Sevices.csproj" />
     <ProjectReference Include="..\Vezeeta.Core\Vezeeta.Core.csproj" />
     <ProjectReference Include="..\Vezeeta.Repository\Vezeeta.Repository.csproj" />
   </ItemGroup>

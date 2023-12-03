@@ -11,21 +11,21 @@ namespace Vezeeta.Core.Repositories
 {
     public interface IAdminRepository :IBaseRepository<ApplicationUser>
     {
-        Task<int> NumOfDoctors();
-        Task<int> NumOfPatients();
-        //Task<> NumOfPatients();
-        Task<List<SpecializationDTO>> Top5Specializations();
-        Task<List<Doctor>> Top5Doctors();
+        //Task<int> NumOfDoctors();
+        //Task<int> NumOfPatients();
+        ////Task<> NumOfPatients();
+        //Task<List<SpecializationDTO>> Top5Specializations();
+        //Task<List<Doctor>> Top5Doctors();
         
-        //Doctors
-        Task<bool> AddDoctor();
-        Task<bool> EditDoctor();
-        Task<bool> DeleteDoctor();
+        ////Doctors
+        //Task<bool> AddDoctor();
+        //Task<bool> EditDoctor();
+        //Task<bool> DeleteDoctor();
 
-        //Settings
-        Task<bool> AddDiscountCode(DiscountCode discountCode);
-        Task<bool> UpdateDiscountCode();
-        Task<bool> DeleteDiscountCode();
-        Task<bool> DeactivateDiscountCode();
+        ////Settings
+        //Task<bool> AddDiscountCode(DiscountCode discountCode);
+        //Task<bool> UpdateDiscountCode();
+        //Task<bool> DeleteDiscountCode();
+        //Task<bool> DeactivateDiscountCode();
     }
 }

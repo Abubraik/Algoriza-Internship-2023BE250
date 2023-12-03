@@ -12,8 +12,8 @@ using Vezeeta.Repository;
 namespace Vezeeta.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231128113420_BookingStatus")]
-    partial class BookingStatus
+    [Migration("20231203144311_AdminSeed")]
+    partial class AdminSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,9 @@ namespace Vezeeta.Repository.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.14")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -50,6 +53,26 @@ namespace Vezeeta.Repository.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Patient",
+                            NormalizedName = "PATIENT"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            Name = "Doctor",
+                            NormalizedName = "DOCTOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -75,6 +98,75 @@ namespace Vezeeta.Repository.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdentityUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8f22b0be-7bf7-49fd-9e46-ff1122a96761",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c5c4d91e-c98e-4500-9e74-80dc073fb60d",
+                            Email = "admin@vezeeta.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAIAAYagAAAAENJvlwnIGoJHVzMI0Dre+zGUj4GM6Ag/9XcTgiogTYIn9HMvy+sWS11ar8sghj4b4A==",
+                            PhoneNumber = "01066147039",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1fa6895c-1a87-427c-b287-0948d576dad3",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -167,9 +259,11 @@ namespace Vezeeta.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("appointmentId"));
 
                     b.Property<string>("doctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("appointmentId");
@@ -187,19 +281,23 @@ namespace Vezeeta.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("bookingId"));
 
-                    b.Property<int?>("discountCodeId")
+                    b.Property<int>("discountCodeId")
                         .HasColumnType("int");
 
                     b.Property<string>("doctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("finalPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("patientId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<short>("status")
@@ -216,7 +314,8 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("patientId");
 
-                    b.HasIndex("timeSlotId");
+                    b.HasIndex("timeSlotId")
+                        .IsUnique();
 
                     b.ToTable("Booking");
                 });
@@ -258,12 +357,13 @@ namespace Vezeeta.Repository.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<decimal>("discountValue")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("isValid")
                         .HasColumnType("bit");
 
-                    b.Property<int>("numberOfRequiredBooking")
+                    b.Property<int>("numberOfRequiredBookings")
                         .HasColumnType("int");
 
                     b.HasKey("discountCodeId");
@@ -283,6 +383,7 @@ namespace Vezeeta.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("doctorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("feedback")
@@ -290,6 +391,7 @@ namespace Vezeeta.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("patientId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("rating")
@@ -322,6 +424,158 @@ namespace Vezeeta.Repository.Migrations
                     b.HasKey("specializationId");
 
                     b.ToTable("Specializations");
+
+                    b.HasData(
+                        new
+                        {
+                            specializationId = 1,
+                            name = "Cardiology"
+                        },
+                        new
+                        {
+                            specializationId = 2,
+                            name = "Neurology"
+                        },
+                        new
+                        {
+                            specializationId = 3,
+                            name = "Oncology"
+                        },
+                        new
+                        {
+                            specializationId = 4,
+                            name = "Pediatrics"
+                        },
+                        new
+                        {
+                            specializationId = 5,
+                            name = "Gastroenterology"
+                        },
+                        new
+                        {
+                            specializationId = 6,
+                            name = "Orthopedics"
+                        },
+                        new
+                        {
+                            specializationId = 7,
+                            name = "Dermatology"
+                        },
+                        new
+                        {
+                            specializationId = 8,
+                            name = "Endocrinology"
+                        },
+                        new
+                        {
+                            specializationId = 9,
+                            name = "Ophthalmology"
+                        },
+                        new
+                        {
+                            specializationId = 10,
+                            name = "Obstetrics and Gynecology"
+                        },
+                        new
+                        {
+                            specializationId = 11,
+                            name = "Urology"
+                        },
+                        new
+                        {
+                            specializationId = 12,
+                            name = "Psychiatry"
+                        },
+                        new
+                        {
+                            specializationId = 13,
+                            name = "Anesthesiology"
+                        },
+                        new
+                        {
+                            specializationId = 14,
+                            name = "Pulmonology"
+                        },
+                        new
+                        {
+                            specializationId = 15,
+                            name = "Rheumatology"
+                        },
+                        new
+                        {
+                            specializationId = 16,
+                            name = "Nephrology"
+                        },
+                        new
+                        {
+                            specializationId = 17,
+                            name = "ENT (Ear, Nose, and Throat)"
+                        },
+                        new
+                        {
+                            specializationId = 18,
+                            name = "Radiology"
+                        },
+                        new
+                        {
+                            specializationId = 19,
+                            name = "Immunology"
+                        },
+                        new
+                        {
+                            specializationId = 20,
+                            name = "Pathology"
+                        },
+                        new
+                        {
+                            specializationId = 21,
+                            name = "General Surgery"
+                        },
+                        new
+                        {
+                            specializationId = 22,
+                            name = "Plastic Surgery"
+                        },
+                        new
+                        {
+                            specializationId = 23,
+                            name = "Neurosurgery"
+                        },
+                        new
+                        {
+                            specializationId = 24,
+                            name = "Cardiothoracic Surgery"
+                        },
+                        new
+                        {
+                            specializationId = 25,
+                            name = "Vascular Surgery"
+                        },
+                        new
+                        {
+                            specializationId = 26,
+                            name = "Emergency Medicine"
+                        },
+                        new
+                        {
+                            specializationId = 27,
+                            name = "Sports Medicine"
+                        },
+                        new
+                        {
+                            specializationId = 28,
+                            name = "Geriatrics"
+                        },
+                        new
+                        {
+                            specializationId = 29,
+                            name = "Hematology"
+                        },
+                        new
+                        {
+                            specializationId = 30,
+                            name = "Infectious Disease"
+                        });
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.TimeSlot", b =>
@@ -335,14 +589,14 @@ namespace Vezeeta.Repository.Migrations
                     b.Property<int>("dayScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("endTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("endTime")
+                        .HasColumnType("time");
 
                     b.Property<bool>("isBooked")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("startTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("startTime")
+                        .HasColumnType("time");
 
                     b.HasKey("tiemSlotId");
 
@@ -364,6 +618,7 @@ namespace Vezeeta.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -510,7 +765,9 @@ namespace Vezeeta.Repository.Migrations
                 {
                     b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
                         .WithMany("appointments")
-                        .HasForeignKey("doctorId");
+                        .HasForeignKey("doctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("doctor");
                 });
@@ -518,21 +775,27 @@ namespace Vezeeta.Repository.Migrations
             modelBuilder.Entity("Vezeeta.Core.Models.Booking", b =>
                 {
                     b.HasOne("Vezeeta.Core.Models.DiscountCode", "discountCode")
-                        .WithMany()
-                        .HasForeignKey("discountCodeId");
+                        .WithMany("bookings")
+                        .HasForeignKey("discountCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
                         .WithMany("bookings")
-                        .HasForeignKey("doctorId");
+                        .HasForeignKey("doctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.Users.Patient", "patient")
                         .WithMany("bookings")
-                        .HasForeignKey("patientId");
+                        .HasForeignKey("patientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.TimeSlot", "timeSlot")
-                        .WithMany()
-                        .HasForeignKey("timeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("Vezeeta.Core.Models.Booking", "timeSlotId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("discountCode");
@@ -565,11 +828,15 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
                         .WithMany("feedbacks")
-                        .HasForeignKey("doctorId");
+                        .HasForeignKey("doctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.Users.Patient", "patient")
                         .WithMany("feedbacks")
-                        .HasForeignKey("patientId");
+                        .HasForeignKey("patientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("booking");
 
@@ -628,6 +895,11 @@ namespace Vezeeta.Repository.Migrations
             modelBuilder.Entity("Vezeeta.Core.Models.DaySchedule", b =>
                 {
                     b.Navigation("timeSlots");
+                });
+
+            modelBuilder.Entity("Vezeeta.Core.Models.DiscountCode", b =>
+                {
+                    b.Navigation("bookings");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Specialization", b =>

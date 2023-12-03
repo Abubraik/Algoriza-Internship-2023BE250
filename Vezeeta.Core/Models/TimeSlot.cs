@@ -11,12 +11,16 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int tiemSlotId { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
+        [Required]
+        public TimeOnly startTime { get; set; }
+        [Required]
+        public TimeOnly endTime { get; set; }
+        [Required]
         public bool isBooked { get; set; }
 
+        [Required]
         public int dayScheduleId { get; set; }
-        public DaySchedule daySchedule {  get; set; }
+        public virtual DaySchedule daySchedule {  get; set; }
 
     }
 }

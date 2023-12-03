@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vezeeta.Api", "Vezeeta.Api\Vezeeta.Api.csproj", "{E35B6208-7FAB-441E-82BE-B8F638378C4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vezeeta.Api", "Vezeeta.Api\Vezeeta.Api.csproj", "{E35B6208-7FAB-441E-82BE-B8F638378C4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vezeeta.Core", "Vezeeta.Core\Vezeeta.Core.csproj", "{3F49EE3E-F72E-4995-B1D2-80746C27DDAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vezeeta.Core", "Vezeeta.Core\Vezeeta.Core.csproj", "{3F49EE3E-F72E-4995-B1D2-80746C27DDAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vezeeta.Repository", "Vezeeta.Repository\Vezeeta.Repository.csproj", "{10F071EE-65FF-4AF1-B634-DB5AB05A5FA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vezeeta.Repository", "Vezeeta.Repository\Vezeeta.Repository.csproj", "{10F071EE-65FF-4AF1-B634-DB5AB05A5FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vezeeta.Service", "Vezeeta.Service\Vezeeta.Service.csproj", "{613E6763-009B-45A7-8AE0-3CB763802BD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vezeeta.Sevices", "Sevices\Vezeeta.Sevices.csproj", "{010698EA-BABF-40EC-B57D-0A869741E01A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{10F071EE-65FF-4AF1-B634-DB5AB05A5FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10F071EE-65FF-4AF1-B634-DB5AB05A5FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10F071EE-65FF-4AF1-B634-DB5AB05A5FA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{613E6763-009B-45A7-8AE0-3CB763802BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{613E6763-009B-45A7-8AE0-3CB763802BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{613E6763-009B-45A7-8AE0-3CB763802BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{613E6763-009B-45A7-8AE0-3CB763802BD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{010698EA-BABF-40EC-B57D-0A869741E01A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{010698EA-BABF-40EC-B57D-0A869741E01A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{010698EA-BABF-40EC-B57D-0A869741E01A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{010698EA-BABF-40EC-B57D-0A869741E01A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

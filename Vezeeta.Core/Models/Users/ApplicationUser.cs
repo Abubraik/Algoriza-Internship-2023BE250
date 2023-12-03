@@ -15,12 +15,16 @@ namespace Vezeeta.Core.Models.Users
         public string firstName { get; set; }
         [Required]
         public string lastName { get; set; }
+        [Required]
+        public override string Email { get; set; }
+        //[Required]
+        //public override string PhoneNumber { get; set; }
 
 
         [Required]
         public Gender gender { get; set; }
         [Required]
-        public DateTime dateOfBirth { get; set; }
+        public DateOnly dateOfBirth { get; set; }
         [Required]
         public string photoPath { get; set; }
         

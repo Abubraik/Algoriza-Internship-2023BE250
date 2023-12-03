@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Vezeeta.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class Testing : Migration
+    public partial class initialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,12 +34,12 @@ namespace Vezeeta.Repository.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     firstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     gender = table.Column<short>(type: "smallint", nullable: false),
                     dateOfBirth = table.Column<DateTime>(type: "date", nullable: false),
                     photoPath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -63,8 +65,8 @@ namespace Vezeeta.Repository.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     discountCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     discountType = table.Column<short>(type: "smallint", nullable: false),
-                    discountValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    numberOfRequiredBooking = table.Column<int>(type: "int", nullable: false),
+                    discountValue = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    numberOfRequiredBookings = table.Column<int>(type: "int", nullable: false),
                     isValid = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -238,8 +240,8 @@ namespace Vezeeta.Repository.Migrations
                 {
                     appointmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -248,7 +250,8 @@ namespace Vezeeta.Repository.Migrations
                         name: "FK_Appointment_Doctors_doctorId",
                         column: x => x.doctorId,
                         principalTable: "Doctors",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,8 +280,8 @@ namespace Vezeeta.Repository.Migrations
                 {
                     tiemSlotId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    startTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    endTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    startTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    endTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     isBooked = table.Column<bool>(type: "bit", nullable: false),
                     dayScheduleId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -299,12 +302,13 @@ namespace Vezeeta.Repository.Migrations
                 {
                     bookingId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    finalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    finalPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    status = table.Column<short>(type: "smallint", nullable: false),
                     timeSlotId = table.Column<int>(type: "int", nullable: false),
-                    discountCodeId = table.Column<int>(type: "int", nullable: true),
-                    patientId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    discountCodeId = table.Column<int>(type: "int", nullable: false),
+                    patientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -313,23 +317,26 @@ namespace Vezeeta.Repository.Migrations
                         name: "FK_Booking_DiscountCode_discountCodeId",
                         column: x => x.discountCodeId,
                         principalTable: "DiscountCode",
-                        principalColumn: "discountCodeId");
+                        principalColumn: "discountCodeId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Booking_Doctors_doctorId",
                         column: x => x.doctorId,
                         principalTable: "Doctors",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Booking_Patients_patientId",
                         column: x => x.patientId,
                         principalTable: "Patients",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Booking_TimeSlot_timeSlotId",
                         column: x => x.timeSlotId,
                         principalTable: "TimeSlot",
                         principalColumn: "tiemSlotId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -341,8 +348,8 @@ namespace Vezeeta.Repository.Migrations
                     feedback = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     rating = table.Column<int>(type: "int", nullable: false),
                     bookingId = table.Column<int>(type: "int", nullable: false),
-                    patientId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    patientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    doctorId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -357,12 +364,61 @@ namespace Vezeeta.Repository.Migrations
                         name: "FK_Feedbacks_Doctors_doctorId",
                         column: x => x.doctorId,
                         principalTable: "Doctors",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Feedbacks_Patients_patientId",
                         column: x => x.patientId,
                         principalTable: "Patients",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Admin", "ADMIN" },
+                    { "2", null, "Patient", "PATIENT" },
+                    { "3", null, "Doctor", "DOCTOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Specializations",
+                columns: new[] { "specializationId", "name" },
+                values: new object[,]
+                {
+                    { 1, "Cardiology" },
+                    { 2, "Neurology" },
+                    { 3, "Oncology" },
+                    { 4, "Pediatrics" },
+                    { 5, "Gastroenterology" },
+                    { 6, "Orthopedics" },
+                    { 7, "Dermatology" },
+                    { 8, "Endocrinology" },
+                    { 9, "Ophthalmology" },
+                    { 10, "Obstetrics and Gynecology" },
+                    { 11, "Urology" },
+                    { 12, "Psychiatry" },
+                    { 13, "Anesthesiology" },
+                    { 14, "Pulmonology" },
+                    { 15, "Rheumatology" },
+                    { 16, "Nephrology" },
+                    { 17, "ENT (Ear, Nose, and Throat)" },
+                    { 18, "Radiology" },
+                    { 19, "Immunology" },
+                    { 20, "Pathology" },
+                    { 21, "General Surgery" },
+                    { 22, "Plastic Surgery" },
+                    { 23, "Neurosurgery" },
+                    { 24, "Cardiothoracic Surgery" },
+                    { 25, "Vascular Surgery" },
+                    { 26, "Emergency Medicine" },
+                    { 27, "Sports Medicine" },
+                    { 28, "Geriatrics" },
+                    { 29, "Hematology" },
+                    { 30, "Infectious Disease" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -427,7 +483,8 @@ namespace Vezeeta.Repository.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_timeSlotId",
                 table: "Booking",
-                column: "timeSlotId");
+                column: "timeSlotId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DaySchedule_appointmentId",
@@ -442,7 +499,8 @@ namespace Vezeeta.Repository.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_bookingId",
                 table: "Feedbacks",
-                column: "bookingId");
+                column: "bookingId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_doctorId",

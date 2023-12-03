@@ -13,11 +13,18 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int discountCodeId { get; set; }
+        [Required]
         public string discountCode { get; set; }
-        public DiscountType discountType{ get; set; }
+        [Required]
+        public virtual DiscountType discountType{ get; set; }
+        [Required]
         public decimal discountValue { get; set; }
-        public int numberOfRequiredBooking { get; set; }
+        [Required]
+        public int numberOfRequiredBookings { get; set; }
+        [Required]
         public bool isValid { get; set; }
+
+        public virtual List<Booking> bookings { get; set; }
 
     }
 }

@@ -1,24 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Reflection;
 using System.Threading.Tasks;
-using Vezeeta.Core;
-using Vezeeta.Core.Models;
-using Vezeeta.Core.Models.Users;
-using Vezeeta.Core.Repositories;
-using static Vezeeta.Core.Enums.Enums;
-
-namespace Vezeeta.Repository.Repositories
+namespace Vezeeta.Service.Services
 {
-    internal class AdminRepository : BaseRepository<ApplicationUser>, IAdminRepository
+    public class AdminService 
     {
-         public AdminRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-
         //public async Task<int> NumOfDoctors() => await _entities. OfType<Doctor>().CountAsync();
 
         //public async Task<int> NumOfPatients() => await _entities.OfType<Patient>().CountAsync();

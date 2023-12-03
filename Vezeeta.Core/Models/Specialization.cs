@@ -7,8 +7,9 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int specializationId { get; set; }
+        [Required]
         public string name { get; set; }
 
-        public List<Doctor> Doctors { get; set; }
+        public virtual List<Doctor> Doctors { get; set; }
     }
 }

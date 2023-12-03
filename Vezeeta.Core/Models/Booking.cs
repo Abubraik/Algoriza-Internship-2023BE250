@@ -13,19 +13,26 @@ namespace Vezeeta.Core.Models
     {
         [Key]
         public int bookingId { get; set; }
+        [Required]
         public decimal price { get; set; }
+        [Required]
         public decimal finalPrice { get; set; }
+        [Required]
         public Status status { get; set; }
 
+        [Required]
         public int timeSlotId { get; set; }
-        public TimeSlot timeSlot { get; set; }
-        //public int? discountCodeId { get; set; }
-        public DiscountCode? discountCode { get; set; }
-        //public int patientId { get; set; }
-        public Patient patient{ get; set; }
-        //public int doctorId { get; set; }
-        public Doctor doctor { get; set; }
-        public Feedback? feedback { get; set; }
+        public virtual TimeSlot timeSlot { get; set; }
+        [Required]
+        public int discountCodeId { get; set; }
+        public virtual DiscountCode? discountCode { get; set; }
+        [Required]
+        public string patientId { get; set; }
+        public virtual Patient patient{ get; set; }
+        [Required]
+        public string doctorId { get; set; }
+        public virtual Doctor doctor { get; set; }
+        public virtual Feedback? feedback { get; set; }
 
     }
 }
