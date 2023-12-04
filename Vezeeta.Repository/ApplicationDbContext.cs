@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.ComponentModel;
@@ -20,6 +21,9 @@ namespace Vezeeta.Repository
             base.OnModelCreating(modelBuilder);
             // Configure DateOnlyProperty to store only the date part
             modelBuilder.DataSeed();
+
+
+
             //modelBuilder.RolesSeed();
             #region Conversion
             var decimalConverter = new ValueConverter<decimal, decimal>(
@@ -92,18 +96,7 @@ namespace Vezeeta.Repository
                 .WithMany(b => b.feedbacks)
                 .HasForeignKey(b => b.patientId)
                 .OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Booking>()
-            //    .HasOne(e => e.timeSlot)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.timeSlotId);
-            //modelBuilder.Entity<Booking>()
-            //    .HasOne(e=>e.doctor)
-            //    .WithMany()
-            //    .HasForeignKey(e=>e.doctorId);
-            //modelBuilder.Entity<Booking>()
-            //    .HasOne(e => e.patient)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.patientId);
+
             #region
             //modelBuilder.Entity<TimeSlot>()
             //    .Property(e => e.startTime)

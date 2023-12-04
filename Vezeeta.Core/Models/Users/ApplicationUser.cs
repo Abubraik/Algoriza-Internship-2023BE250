@@ -25,8 +25,6 @@ namespace Vezeeta.Core.Models.Users
         public Gender gender { get; set; }
         [Required]
         public DateOnly dateOfBirth { get; set; }
-        [Required]
-        public string photoPath { get; set; }
         
     }
 }

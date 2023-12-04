@@ -9,7 +9,7 @@ namespace Vezeeta.Core.Models.Users
 {
     public class Patient :ApplicationUser
     {
-        public new string? photoPath { get; set; }
+        public string? photoPath { get; set; }
 
         public virtual List<Booking> bookings{ get; set; }
         public virtual List<Feedback> feedbacks { get; set; }

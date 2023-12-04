@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vezeeta.Core.Models.Users;
+using Vezeeta.Sevices.Models;
 
 namespace Vezeeta.Core.Services
 {
-    public interface IPatientService
+    public interface IMailService
     {
-        Task<String> AddPatient(AccountModel model);
-
+        void SendEmail(Message message);
     }
 }

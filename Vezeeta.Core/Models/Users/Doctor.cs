@@ -12,6 +12,8 @@ namespace Vezeeta.Core.Models.Users
     {
         [Required]
         public int specializationId { get; set; }
+        [Required]
+        public required string photoPath { get; set; }
         public virtual Specialization specialization { get; set; }
 
         public virtual List<Appointment> appointments { get; set; }

@@ -54,19 +54,22 @@ namespace Vezeeta.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "admin-role",
+                            ConcurrencyStamp = "admin-role",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = "patient-role",
+                            ConcurrencyStamp = "patient-role",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "3",
+                            Id = "doctor-role",
+                            ConcurrencyStamp = "doctor-role",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         });
@@ -95,75 +98,6 @@ namespace Vezeeta.Repository.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityUser");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8f22b0be-7bf7-49fd-9e46-ff1122a96761",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c5c4d91e-c98e-4500-9e74-80dc073fb60d",
-                            Email = "admin@vezeeta.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAENJvlwnIGoJHVzMI0Dre+zGUj4GM6Ag/9XcTgiogTYIn9HMvy+sWS11ar8sghj4b4A==",
-                            PhoneNumber = "01066147039",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "1fa6895c-1a87-427c-b287-0948d576dad3",
-                            TwoFactorEnabled = false,
-                            UserName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -226,6 +160,13 @@ namespace Vezeeta.Repository.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
+                            RoleId = "admin-role"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -669,10 +610,6 @@ namespace Vezeeta.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("photoPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -686,11 +623,36 @@ namespace Vezeeta.Repository.Migrations
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.UseTptMappingStrategy();
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "105ede58-4581-4317-9abd-89731456e1d8",
+                            Email = "admin@vezeeta.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "admin@vezeeta.com",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOZOuzT3ORVgr/QGWhfvrXWYnADb59NhdBLSSW0rHmEQKH6ukY1XyVVpA+/F/iUZ4A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "6b79d100-e728-4e06-92bd-b4fd35f6ae7d",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@vezeeta.com",
+                            dateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            firstName = "Admin",
+                            gender = (short)0,
+                            lastName = "Vezeeta"
+                        });
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Doctor", b =>
                 {
                     b.HasBaseType("Vezeeta.Core.Models.Users.ApplicationUser");
+
+                    b.Property<string>("photoPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("specializationId")
                         .HasColumnType("int");
@@ -703,6 +665,9 @@ namespace Vezeeta.Repository.Migrations
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Patient", b =>
                 {
                     b.HasBaseType("Vezeeta.Core.Models.Users.ApplicationUser");
+
+                    b.Property<string>("photoPath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Patients", (string)null);
                 });

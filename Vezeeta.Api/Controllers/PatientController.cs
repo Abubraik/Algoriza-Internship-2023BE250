@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NETCore.MailKit.Core;
+using Vezeeta.Core.DTOs;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
+using Vezeeta.Core.Services;
 using Vezeeta.Service.Services;
 using Vezeeta.Sevices.Helpers;
+using Vezeeta.Sevices.Models;
+using Vezeeta.Sevices.Services;
 
 namespace Vezeeta.Api.Controllers
 {
@@ -11,37 +17,43 @@ namespace Vezeeta.Api.Controllers
     [ApiController]
     public class PatientController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IPatientService _patientService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMailService _mailService;
 
         public PatientController(UserManager<ApplicationUser> userManager
-            , SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
+            , SignInManager<ApplicationUser> signInManager, IPatientService patientService,IUnitOfWork unitOfWork, IMailService mailService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            this._userManager = userManager;
+            this._signInManager = signInManager;
+            this._patientService = patientService;
             this._unitOfWork = unitOfWork;
+            this._mailService = mailService;
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterDoctor([FromBody] AccountModel model)
+        public async Task<IActionResult> RegisterPatient([FromBody] AccountModel model)
         {
             if (ModelState.IsValid)
             {
-                Doctor doctor = await adminService.AddDoctor(model);
-                if (doctor == null) return NotFound("Specialization not found");
-                string password = HelperFunctions.GenerateRandomPassword();
-                var result = await userManager.CreateAsync(doctor, password);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(doctor, "Doctor");
-                    return Ok("Doctor added successfully with id: " + doctor.Id);
-                }
-                else return BadRequest(result);
 
-
+                string result= await _patientService.AddPatient(model);
+                if (result == "OK") 
+                    return Ok("Registered successfully, please check you email for confirmation");
+                
+                return BadRequest(result);
+                
             }
             return BadRequest(ModelState);
+        }
+        [HttpGet("TEST")]
+        public IActionResult TestEmail()
+        {
+            var message = new Message(new string[] { "Abdullah.abubraik@gmail.com" }, "Testing", "<h2>This is a TEst</h2>");
+            _mailService.SendEmail(message);
+            return Ok("Sent");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper.Configuration.Annotations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
@@ -24,15 +25,15 @@ namespace Vezeeta.Api.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
 
         public AccountController(UserManager<ApplicationUser> userManager
             , SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            this._userManager = userManager;
+            this._signInManager = signInManager;
             this._unitOfWork = unitOfWork;
         }
 
@@ -40,43 +41,54 @@ namespace Vezeeta.Api.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
 
-            if (signInManager.IsSignedIn(User))
+            if (_signInManager.IsSignedIn(User))
             {
                 return BadRequest(User.Identity?.Name + " is already Logged in");
             }
             if (ModelState.IsValid)
-            {
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-                if (result.Succeeded)
-                {
+            {   //Check if User Exists
+                var user = await _userManager.FindByNameAsync(model.Email);
+                if (user == null) return BadRequest("User Not Found!");
 
-                    return Ok("Signed in successfully");
+                if (user.EmailConfirmed == true)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, false);
+                    if (result.Succeeded)
+                    {
+                        return Ok("Signed in successfully");
+                    }
+                    return BadRequest("Password Not Correct");
                 }
+
+                return BadRequest("Emai Not Confirmed!");
             }
-            return BadRequest("Invalid User");
+            return BadRequest(ModelState);
         }
 
-        [HttpPost("logout")]
+        [HttpPost("/logout")]
         public async Task<IActionResult> Logout()
         {
-            if (!signInManager.IsSignedIn(User))
+            if (!_signInManager.IsSignedIn(User))
             {
                 return BadRequest("You are already Logged out");
             }
-            await signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
             return Ok("Signed out successfully");
         }
 
-
-        
-        //[HttpGet]
-        //public async Task<IActionResult> get([FromQuery] string id)
-        //{
-        //    DoctorModel user = await userManager.FindByIdAsync(id) as DoctorModel;
-
-        //    if (user == null) return NotFound("User Not found");
-
-        //    return Ok(user);
-        //}
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token,string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user!=null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (result.Succeeded)
+                {
+                    return Ok("Thankyou, Email Confirmed Successfully! ");
+                }
+            }
+            return BadRequest("This user is NOT valid! ");
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace Vezeeta.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class AdminController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -70,7 +72,6 @@ namespace Vezeeta.Api.Controllers
                     gender = model.gender,
                     dateOfBirth = model.dateOfBirth,
                     PhoneNumber = model.phoneNumber,
-                    photoPath = "Admin"
                 };
                 string password = HelperFunctions.GenerateRandomPassword();
                 var result = await userManager.CreateAsync(user, password);

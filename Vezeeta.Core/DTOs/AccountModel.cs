@@ -15,8 +15,8 @@ namespace Vezeeta.Core.Models.Users
         public string firstName { get; set; }
         [Required(ErrorMessage = "Last Name is required")]
         public string lastName { get; set; }
-        //[JsonIgnore]
-        //public string? fullName { get; set; }
+        [JsonIgnore]
+        public string? _password{ get; set; }
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress]
         public string email { get; set; }

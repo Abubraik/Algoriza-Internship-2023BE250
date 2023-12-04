@@ -1,7 +1,6 @@
 ﻿using Vezeeta.Core.Services;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Core.Models.Users;
-using Vezeeta.Core;
 using Microsoft.EntityFrameworkCore;
 using Vezeeta.Core.Models;
 using static Vezeeta.Core.Enums.Enums;

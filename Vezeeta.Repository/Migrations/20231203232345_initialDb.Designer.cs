@@ -12,7 +12,7 @@ using Vezeeta.Repository;
 namespace Vezeeta.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231203143059_initialDb")]
+    [Migration("20231203232345_initialDb")]
     partial class initialDb
     {
         /// <inheritdoc />
@@ -57,19 +57,22 @@ namespace Vezeeta.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "admin-role",
+                            ConcurrencyStamp = "admin-role",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = "patient-role",
+                            ConcurrencyStamp = "patient-role",
                             Name = "Patient",
                             NormalizedName = "PATIENT"
                         },
                         new
                         {
-                            Id = "3",
+                            Id = "doctor-role",
+                            ConcurrencyStamp = "doctor-role",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         });
@@ -160,6 +163,13 @@ namespace Vezeeta.Repository.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
+                            RoleId = "admin-role"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -620,6 +630,28 @@ namespace Vezeeta.Repository.Migrations
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.UseTptMappingStrategy();
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "09106589-2fff-4a39-977d-93dd324198c6",
+                            Email = "admin@vezeeta.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "admin@vezeeta.com",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDfN5mbqj43juybdG8GOgH9xp8APebujFexKRY5UG89sPneY1qRzV/9J3gdfUOr0Dw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "48558978-49c9-43e4-ae10-960fd4984dfc",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@vezeeta.com",
+                            dateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            firstName = "Admin",
+                            gender = (short)0,
+                            lastName = "Vezeeta",
+                            photoPath = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Doctor", b =>

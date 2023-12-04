@@ -379,10 +379,15 @@ namespace Vezeeta.Repository.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1", null, "Admin", "ADMIN" },
-                    { "2", null, "Patient", "PATIENT" },
-                    { "3", null, "Doctor", "DOCTOR" }
+                    { "admin-role", "admin-role", "Admin", "ADMIN" },
+                    { "doctor-role", "doctor-role", "Doctor", "DOCTOR" },
+                    { "patient-role", "patient-role", "Patient", "PATIENT" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "dateOfBirth", "firstName", "gender", "lastName", "photoPath" },
+                values: new object[] { "02174cf0–9412–4cfe - afbf - 59f706d72cf6", 0, "09106589-2fff-4a39-977d-93dd324198c6", "admin@vezeeta.com", true, false, null, null, "admin@vezeeta.com", "AQAAAAIAAYagAAAAEDfN5mbqj43juybdG8GOgH9xp8APebujFexKRY5UG89sPneY1qRzV/9J3gdfUOr0Dw==", null, false, "48558978-49c9-43e4-ae10-960fd4984dfc", false, "admin@vezeeta.com", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", (short)0, "Vezeeta", "Admin" });
 
             migrationBuilder.InsertData(
                 table: "Specializations",
@@ -420,6 +425,11 @@ namespace Vezeeta.Repository.Migrations
                     { 29, "Hematology" },
                     { 30, "Infectious Disease" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "admin-role", "02174cf0–9412–4cfe - afbf - 59f706d72cf6" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_doctorId",
