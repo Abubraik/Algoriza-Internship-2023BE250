@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vezeeta.Sevices.Models;
-using Vezeeta.Sevices.Models.DTOs;
+﻿using Vezeeta.Sevices.Models;
 
 namespace Vezeeta.Sevices.Services.Interfaces
 
@@ -12,6 +6,6 @@ namespace Vezeeta.Sevices.Services.Interfaces
     public interface IPatientService
     {
         //Task<ApiResponse<string>> AddPatient(AccountModelDto model);
-
+        Task<ApiResponse<string>> SearchForDoctors(int page, int pageSize, string search);
     }
 }

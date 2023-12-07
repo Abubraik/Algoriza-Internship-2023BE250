@@ -1,5 +1,5 @@
-﻿using Vezeeta.Sevices.Models.DTOs;
-using Vezeeta.Core.Models;
+﻿using Vezeeta.Core.Models;
+using Vezeeta.Sevices.Models.DTOs;
 
 namespace Vezeeta.Sevices.Services.Interfaces
 
@@ -9,7 +9,10 @@ namespace Vezeeta.Sevices.Services.Interfaces
         //Task<IEnumerable<Patient>> getBookings(DayOfWeek day, int pageSize, int pageNumber);
         //Task<Booking> confirmBooking(int bookingId);
         Task<Appointment> AddAppointmentAsync(AddAppointmentDto appointment, string doctorName);
-        Task<Appointment> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateDto, string doctorId);
-        Task<bool> DeleteAppointmentAsync(int timeId, string doctorName);
+        //Task<Appointment> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateDto, string doctorId);
+        Task<(bool IsSuccess, string Message)> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName);
+        //Task<bool> DeleteAppointmentAsync(int timeId, string doctorName);
+        Task<(bool IsSuccess, string Message)> DeleteAppointmentAsync(int timeId, string doctorName);
+
     }
 }

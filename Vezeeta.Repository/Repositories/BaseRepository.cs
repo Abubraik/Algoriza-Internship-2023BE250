@@ -83,10 +83,10 @@ namespace Vezeeta.Repository.Repositories
             return await queryable.Where(predicate).Skip(skip).Take(take).ToListAsync();
         }
 
-            //public  IEnumerable<T> GetData(int pageNumber, int PageSize)
-            //{
-            //    return _entities.Skip((pageNumber * 1) * PageSize).Take(PageSize);
-            //    //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
-            //}
+        public async Task< IQueryable<T>> GetData(int pageNumber, int PageSize)
+        {
+            return _entities.Skip((pageNumber - 1) * PageSize).Take(PageSize);
         }
+            //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
+    }
 }

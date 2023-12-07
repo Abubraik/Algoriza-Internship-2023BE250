@@ -22,7 +22,7 @@ namespace Vezeeta.Sevices.Models.DTOs
         //[JsonIgnore]
         //public string password { get; set; }
 
-        public string? Image { get; set;}
+        public string? Photo { get; set;}
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Gender is required")]
         [ValidEnumValue]

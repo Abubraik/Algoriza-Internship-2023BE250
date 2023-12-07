@@ -56,37 +56,37 @@ namespace Vezeeta.Api.Controllers
         }
 
 
-        [HttpPost("registerAdmin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] AccountModelDto model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    NormalizedUserName = model.FirstName + " " + model.LastName,
-                    Gender = model.Gender,
-                    DateOfBirth = model.DateOfBirth,
-                    PhoneNumber = model.PhoneNumber,
-                };
-                string password = HelperFunctions.GenerateRandomPassword();
-                var result = await userManager.CreateAsync(user, password);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, "Admin");
-                    await signInManager.SignInAsync(user, isPersistent: false);
+        //[HttpPost("registerAdmin")]
+        //public async Task<IActionResult> RegisterAdmin([FromBody] AccountModelDto model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = new ApplicationUser
+        //        {
+        //            UserName = model.Email,
+        //            Email = model.Email,
+        //            FirstName = model.FirstName,
+        //            LastName = model.LastName,
+        //            NormalizedUserName = model.FirstName + " " + model.LastName,
+        //            Gender = model.Gender,
+        //            DateOfBirth = model.DateOfBirth,
+        //            PhoneNumber = model.PhoneNumber,
+        //        };
+        //        string password = HelperFunctions.GenerateRandomPassword();
+        //        var result = await userManager.CreateAsync(user, password);
+        //        if (result.Succeeded)
+        //        {
+        //            await userManager.AddToRoleAsync(user, "Admin");
+        //            await signInManager.SignInAsync(user, isPersistent: false);
 
-                    return StatusCode(201, "Account created successfully with password " + password);
-                }
-                else return BadRequest(result);
+        //            return StatusCode(201, "Account created successfully with password " + password);
+        //        }
+        //        else return BadRequest(result);
 
 
-            }
-            return BadRequest(ModelState);
-        }
+        //    }
+        //    return BadRequest(ModelState);
+        //}
 
         [HttpGet("Doctor/GetById")]
         public async Task<IActionResult> GetDoctorById([FromQuery] string id)
@@ -106,26 +106,7 @@ namespace Vezeeta.Api.Controllers
             return Ok(model);
         }
 
-        [HttpPost("Doctor/Add")]
-        public async Task<IActionResult> RegisterDoctor([FromBody] DoctorModelDto model)
-        {
-            if (ModelState.IsValid)
-            {
-                Doctor doctor = await adminService.AddDoctor(model);
-                if (doctor == null) return NotFound("Specialization not found");
-                string password = HelperFunctions.GenerateRandomPassword();
-                var result = await userManager.CreateAsync(doctor, password);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(doctor, "Doctor");
-                    return Ok("Doctor added successfully with id: " + doctor.Id + " Password: " + password);
-                }
-                else return BadRequest(result);
-
-
-            }
-            return BadRequest(ModelState);
-        }
+   
       //  -------------------------------------------------------------------------------------------------------------------------------- //
         [HttpPut("Doctor/Edit")]
         public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] DoctorModelDto newDoctorInfo)

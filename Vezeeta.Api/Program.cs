@@ -62,7 +62,7 @@ namespace Vezeeta.Api
 
             //builder.Services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>) );
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IUserManagementSevice, UserManagementSevice>();
+            builder.Services.AddScoped<IUserManagementService, UserManagementSevice>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService,PatientService>();

@@ -4,8 +4,8 @@ namespace Vezeeta.Sevices.Services.Interfaces
 {
     public interface IMailService
     {
-        void TestSendEmail(string type, string username,
+        void SendEmail(string type, string username,
             string password, string token, string link);
-        void SendEmail(Message message);
+        //void SendEmail(Message message);
     }
 }

@@ -19,17 +19,17 @@ namespace Vezeeta.Sevices.Services
             this._emailConfiguration = emailConfiguration;
             this._urlHelperFactory = urlHelperFactory;
         }
-        void IMailService.SendEmail(Message message)
-        {
-            var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage);
-        }
-        void IMailService.TestSendEmail(string type, string username,
+        //void IMailService.SendEmail(Message message)
+        //{
+        //    var emailMessage = CreateEmailMessage(message);
+        //    Send(emailMessage);
+        //}
+        void IMailService.SendEmail(string type, string username,
             string password, string token, string link)
         {
             Message message = new Message(new string[] { username },
-                "Vezeeta Email Confirmation",
-                MessageContent("Confirmation",username,password,token,link));
+                $"Vezeeta {type}",
+                MessageContent(type,username,password,token,link));
             var emailMessage = CreateEmailMessage(message);
 
             Send(emailMessage);

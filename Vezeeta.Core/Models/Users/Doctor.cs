@@ -14,7 +14,7 @@ namespace Vezeeta.Core.Models.Users
         public int SpecializationId { get; set; }
         [Required]
         public required string Photo { get; set; }
-        public  Specialization Specialization { get; set; }
+        public  Specialization? Specialization { get; set; }
 
         public List<Appointment> Appointments { get; set; }
         public List<Booking> Bookings { get; set; }

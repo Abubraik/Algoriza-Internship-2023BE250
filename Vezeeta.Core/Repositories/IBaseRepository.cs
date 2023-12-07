@@ -18,6 +18,7 @@ namespace Vezeeta.Core.Repositories
         //Task AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);
         void Remove(T entity);
+        public Task<IQueryable<T>> GetData(int pageNumber, int PageSize);
         //void RemoveRange(IEnumerable<T> entities);
 
     }

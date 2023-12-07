@@ -30,6 +30,7 @@ namespace Vezeeta.Sevices.Services
             this._urlHelperFactory = urlHelperFactory;
             this._actionContextAccessor = actionContextAccessor;
         }
+
         //public async Task<ApiResponse<string>> AddPatient(AccountModelDto model)
         //{
         //    //            //Check user if exist
@@ -70,5 +71,14 @@ namespace Vezeeta.Sevices.Services
 
         //}
 
+        public async Task<ApiResponse<string>> SearchForDoctors(int page, int pageSize, string search)
+        {
+            var result = await _unitOfWork.Doctors.GetData(page, pageSize);
+            //use result to query the search string and return firstname or secondname or phone number of email that contains "search"
+            var r = result.Select(e => new { name = $"{e.FirstName.Contains(search)} {e.LastName.Contains(search)}", });
+            return new ApiResponse<string> { IsSuccess = true, StatusCode = 200, Message = "OK" };
+
+
+        }
     }
 }

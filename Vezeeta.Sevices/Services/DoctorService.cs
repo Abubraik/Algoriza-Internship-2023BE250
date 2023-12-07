@@ -89,60 +89,88 @@ public class DoctorService : IDoctorService
 
 
 
-    public async Task<Appointment> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName)
+    //public async Task<Appointmetn> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName)
+    public async Task<(bool IsSuccess, string Message)> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName)
     {
+        #region CommentedCode
+        //var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
+        //// Parse the new and old times
+        ////var oldStartTime = TimeOnly.Parse(updateTimeSlotDto.OldStartTime);
+        ////var oldEndTime = TimeOnly.Parse(updateTimeSlotDto.OldEndTime);
+        //var newStartTime = TimeOnly.Parse(updateTimeSlotDto.NewStartTime);
+        //var newEndTime = TimeOnly.Parse(updateTimeSlotDto.NewEndTime);
+
+        //// Check if the doctor has any appointments on that day
+        //var appointment = await _context.Appointments
+        //    .Include(e => e.DaySchedules)
+        //    .ThenInclude(e => e.TimeSlots)
+        //    .SingleOrDefaultAsync(e => e.DoctorId == doctorId
+        //&& e.DaySchedules.Any(d => d.DayOfWeek == updateTimeSlotDto.DayOfWeek));
+
+        //if (appointment == null)
+        //{
+        //    // Doctor has no appointments on that day
+        //    return null;
+        //}
+
+        //var daySchedule = appointment.DaySchedules
+        //    .FirstOrDefault(ds => ds.DayOfWeek == updateTimeSlotDto.DayOfWeek);
+
+        //if (daySchedule == null)
+        //{
+        //    // Doctor has an appointment, but not on that specific day
+        //    return null;
+        //}
+
+        //// Find the existing timeslot to update
+        //var timeSlotToUpdate = daySchedule.TimeSlots
+        //    .FirstOrDefault(ts => ts.StartTime == oldStartTime && ts.EndTime == oldEndTime);
+
+        //var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId);
+        //if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked
+        //    || (checkBookingStatus != null && checkBookingStatus.Status != Status.Canceled))
+        //{
+        //    //check if it is already booked
+        //    // The old timeslot doesn't exist
+        //    return null;
+        //}
+
+        //// Update the timeslot
+        //timeSlotToUpdate.StartTime = newStartTime;
+        //timeSlotToUpdate.EndTime = newEndTime;
+
+        //// Save the changes
+        //await _unitOfWork.Complete();
+
+        //return appointment; // Return the updated appointment
+
+        #endregion
         var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
-        // Parse the new and old times
-        var oldStartTime = TimeOnly.Parse(updateTimeSlotDto.OldStartTime);
-        var oldEndTime = TimeOnly.Parse(updateTimeSlotDto.OldEndTime);
         var newStartTime = TimeOnly.Parse(updateTimeSlotDto.NewStartTime);
         var newEndTime = TimeOnly.Parse(updateTimeSlotDto.NewEndTime);
+        var timeSlotToUpdate = await _unitOfWork.TimeSlots
+            .Find(e => e.TiemSlotId == updateTimeSlotDto.TimeSlotId);
 
-        // Check if the doctor has any appointments on that day
-        var appointment = await _context.Appointments
-            .Include(e => e.DaySchedules)
-            .ThenInclude(e => e.TimeSlots)
-            .SingleOrDefaultAsync(e => e.DoctorId == doctorId
-        && e.DaySchedules.Any(d => d.DayOfWeek == updateTimeSlotDto.DayOfWeek));
-
-        if (appointment == null)
+        var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId && (e.DoctorId == doctorId));
+        //check if it is already booked || The old timeslot doesn't exist
+        if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked || checkBookingStatus == null ||
+            (checkBookingStatus != null && checkBookingStatus.Status != Status.Canceled))
         {
-            // Doctor has no appointments on that day
-            return null;
+            return (IsSuccess: false, Message: "TimeSlot is not available..!");
         }
 
-        var daySchedule = appointment.DaySchedules
-            .FirstOrDefault(ds => ds.DayOfWeek == updateTimeSlotDto.DayOfWeek);
-
-        if (daySchedule == null)
+        //check if startTime is before endTime
+        if (newStartTime > newEndTime)
         {
-            // Doctor has an appointment, but not on that specific day
-            return null;
+            return (IsSuccess: false, Message: "StartTime is AFTER EndTime..!");
         }
-
-        // Find the existing timeslot to update
-        var timeSlotToUpdate = daySchedule.TimeSlots
-            .FirstOrDefault(ts => ts.StartTime == oldStartTime && ts.EndTime == oldEndTime);
-
-        var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId);
-        if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked
-            || (checkBookingStatus != null && checkBookingStatus.Status != Status.Canceled))
-        {
-            //check if it is already booked
-            // The old timeslot doesn't exist
-            return null;
-        }
-
-        // Update the timeslot
         timeSlotToUpdate.StartTime = newStartTime;
         timeSlotToUpdate.EndTime = newEndTime;
-
-        // Save the changes
-        await _unitOfWork.Complete();
-
-        return appointment; // Return the updated appointment
+        return (IsSuccess: true, Message: "TimeSlot updated Successfully..!");
     }
-    public async Task<bool> DeleteAppointmentAsync(int timeId, string doctorName)
+    //public async Task<bool> DeleteAppointmentAsync(int timeId, string doctorName)
+    public async Task<(bool IsSuccess, string Message)> DeleteAppointmentAsync(int timeId, string doctorName)
+
     {
         var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
         var appointment = await _unitOfWork.Appointments.Find(e => e.DoctorId == doctorId);
@@ -150,19 +178,18 @@ public class DoctorService : IDoctorService
 
         if (appointment == null || timeSlot == null)
         {
-            return false;
+            return (IsSuccess: false, Message: "TimeSlot is not available..!");
         }
-        var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeId);
+        var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeId && e.DoctorId == doctorId);
 
         if (checkBookingStatus != null)
         {
-            if (checkBookingStatus.Status != Status.Canceled || checkBookingStatus.DoctorId != doctorId)
-                return false;
+            if (checkBookingStatus.Status != Status.Canceled)
+                return (IsSuccess: false, Message: "TimeSlot is already within patients records..!");
         }
 
         _unitOfWork.TimeSlots.Remove(timeSlot);
         await _unitOfWork.Complete();
-        return true;
-
+        return (IsSuccess: true, Message: "TimeSlot Deleted..!");
     }
 }
