@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.Numerics;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Core.Services;
+using Vezeeta.Services.Models.DTOs;
 using Vezeeta.Sevices.Helpers;
+using Vezeeta.Sevices.Models.DTOs;
+using Vezeeta.Sevices.Services.Interfaces;
 
 namespace Vezeeta.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+
     public class AdminController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -55,23 +54,23 @@ namespace Vezeeta.Api.Controllers
         {
             return Ok(await adminService.Top10Doctors());
         }
-    
+
 
         [HttpPost("registerAdmin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] AccountModel model)
+        public async Task<IActionResult> RegisterAdmin([FromBody] AccountModelDto model)
         {
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
                 {
-                    UserName = model.email,
-                    Email = model.email,
-                    firstName = model.firstName,
-                    lastName = model.lastName,
-                    NormalizedUserName = model.firstName + " " + model.lastName,
-                    gender = model.gender,
-                    dateOfBirth = model.dateOfBirth,
-                    PhoneNumber = model.phoneNumber,
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    NormalizedUserName = model.FirstName + " " + model.LastName,
+                    Gender = model.Gender,
+                    DateOfBirth = model.DateOfBirth,
+                    PhoneNumber = model.PhoneNumber,
                 };
                 string password = HelperFunctions.GenerateRandomPassword();
                 var result = await userManager.CreateAsync(user, password);
@@ -96,19 +95,19 @@ namespace Vezeeta.Api.Controllers
             if (doctor == null) return NotFound("No Doctor with this ID");
             var model = new
             {
-                image = doctor.photoPath,
-                fullName = $"{doctor.firstName} {doctor.lastName}",
+                image = doctor.Photo,
+                fullName = $"{doctor.FirstName} {doctor.LastName}",
                 email = doctor.Email,
                 phoneNumber = doctor.PhoneNumber,
-                specialization = doctor.specialization.name,
-                gender = doctor.gender,
-                dateOfBirth = doctor.dateOfBirth,
+                specialization = doctor.Specialization.Name,
+                gender = doctor.Gender,
+                dateOfBirth = doctor.DateOfBirth,
             };
             return Ok(model);
         }
 
         [HttpPost("Doctor/Add")]
-        public async Task<IActionResult> RegisterDoctor([FromBody] DoctorModel model)
+        public async Task<IActionResult> RegisterDoctor([FromBody] DoctorModelDto model)
         {
             if (ModelState.IsValid)
             {
@@ -119,7 +118,7 @@ namespace Vezeeta.Api.Controllers
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(doctor, "Doctor");
-                    return Ok("Doctor added successfully with id: " + doctor.Id);
+                    return Ok("Doctor added successfully with id: " + doctor.Id + " Password: " + password);
                 }
                 else return BadRequest(result);
 
@@ -127,9 +126,9 @@ namespace Vezeeta.Api.Controllers
             }
             return BadRequest(ModelState);
         }
-
+      //  -------------------------------------------------------------------------------------------------------------------------------- //
         [HttpPut("Doctor/Edit")]
-        public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] DoctorModel newDoctorInfo)
+        public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] DoctorModelDto newDoctorInfo)
         {
             if (ModelState.IsValid && !id.IsNullOrEmpty())
             {
@@ -140,20 +139,68 @@ namespace Vezeeta.Api.Controllers
             }
             return BadRequest(ModelState);
         }
+
         [HttpDelete("Doctor/Delete")]
         public async Task<IActionResult> DeleteDoctor([FromQuery] string id)
         {
             if (!id.IsNullOrEmpty())
             {
-              return Ok(await adminService.DeleteDoctor(id));
+                return Ok(await adminService.DeleteDoctor(id));
             }
             return NotFound();
         }
 
-        //public async Task<IActionResult> GetPatientById(string id)
-        //{
+        [HttpPost("AddDiscountCode")]
+        public async Task<IActionResult> AddDiscountCode([FromBody] DiscountCodeDto discountCode) { 
+        
+            if(ModelState.IsValid)
+            {
+                if(await adminService.AddDiscountCode(discountCode))
+                    return Ok();
+                else
+                    return BadRequest();
+            }    
+            return BadRequest(ModelState);
+        }
 
-        //}
+        [HttpPut("UpdateDiscountCode")]
+        public async Task<IActionResult> UpdateDiscounCode([FromQuery] int discountId, [FromBody] DiscountCodeDto discountCode)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await adminService.UpdateDiscountCode(discountId, discountCode))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete("DeleteDiscounCode")]
+        public async Task<IActionResult> DeleteDiscounCode([FromQuery] int discountId)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await adminService.DeleteDiscountCode(discountId))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPut("DeactivateDiscounCode")]
+        public async Task<IActionResult> DeactivateDiscounCode([FromQuery] int discountId)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await adminService.DeactivateDiscountCode(discountId))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            return BadRequest(ModelState);
+        }
     }
 
     //public static List<T> GetDate(int pageNumber,int PageSize) 

@@ -3,24 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Core.Services;
 using Vezeeta.Sevices;
+using Vezeeta.Sevices.Helpers;
+using Vezeeta.Sevices.Models;
+using Vezeeta.Sevices.Models.DTOs;
+using Vezeeta.Sevices.Services.Interfaces;
 using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Api.Controllers
 {
-    /*
-     * {
-  "firstName": "Abdullah",
-  "lastName": "Admin",
-  "email": "user@example.com",
-  "password": "Abdullah@1234",
-  "phoneNumber": "01066147039",
-  "gender": "Male",
-  "dateOfBirth": "2023-11-29"
-}
-    */
-
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : Controller
@@ -28,13 +19,36 @@ namespace Vezeeta.Api.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserManagementSevice _userManagementSevice;
+        private readonly IMailService _mailService;
 
         public AccountController(UserManager<ApplicationUser> userManager
-            , SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork)
+            , SignInManager<ApplicationUser> signInManager, IUnitOfWork unitOfWork,
+            IUserManagementSevice userManagementSevice, IMailService mailService)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._unitOfWork = unitOfWork;
+            this._userManagementSevice = userManagementSevice;
+            this._mailService = mailService;
+
+        }
+        [HttpPost("/RegisterPaitent")]
+        public async Task<IActionResult> RegisterPaitent(AccountModelDto user)
+        {
+            string password = HelperFunctions.GenerateRandomPassword();
+            user._password = password;
+            var token =await _userManagementSevice.CreatePatientUser(user);
+            if (token.IsSuccess)
+            {
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account"
+                , new { token = token.Response, email = user.Email },HttpContext.Request.Scheme);
+            _mailService.TestSendEmail("Confirmation",user.Email,password, token.Response, confirmationLink);
+                return Ok("Account created successfully, please check you email for confirmation");
+            }
+            //_mailService.SendEmail(message);
+            return BadRequest(token.Message);
+
         }
 
         [HttpPost("/login")]

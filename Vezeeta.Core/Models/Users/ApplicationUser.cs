@@ -12,9 +12,9 @@ namespace Vezeeta.Core.Models.Users
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public string firstName { get; set; }
+        public string FirstName { get; set; }
         [Required]
-        public string lastName { get; set; }
+        public string LastName { get; set; }
         [Required]
         public override string Email { get; set; }
         //[Required]
@@ -22,9 +22,9 @@ namespace Vezeeta.Core.Models.Users
 
 
         [Required]
-        public Gender gender { get; set; }
+        public Gender Gender { get; set; }
         [Required]
-        public DateOnly dateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         
     }
 }

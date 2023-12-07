@@ -18,9 +18,6 @@ namespace Vezeeta.Repository.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.14")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -190,357 +187,357 @@ namespace Vezeeta.Repository.Migrations
 
             modelBuilder.Entity("Vezeeta.Core.Models.Appointment", b =>
                 {
-                    b.Property<int>("appointmentId")
+                    b.Property<int>("AppointmentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("appointmentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppointmentId"));
 
-                    b.Property<string>("doctorId")
+                    b.Property<string>("DoctorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("appointmentId");
+                    b.HasKey("AppointmentId");
 
-                    b.HasIndex("doctorId");
+                    b.HasIndex("DoctorId");
 
-                    b.ToTable("Appointment");
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Booking", b =>
                 {
-                    b.Property<int>("bookingId")
+                    b.Property<int>("BookingId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("bookingId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
 
-                    b.Property<int>("discountCodeId")
+                    b.Property<int>("DiscountCodeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("doctorId")
+                    b.Property<string>("DoctorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("finalPrice")
+                    b.Property<decimal>("FinalPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("patientId")
+                    b.Property<string>("PatientId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("price")
+                    b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<short>("status")
+                    b.Property<short>("Status")
                         .HasColumnType("smallint");
 
-                    b.Property<int>("timeSlotId")
+                    b.Property<int>("TimeSlotId")
                         .HasColumnType("int");
 
-                    b.HasKey("bookingId");
+                    b.HasKey("BookingId");
 
-                    b.HasIndex("discountCodeId");
+                    b.HasIndex("DiscountCodeId");
 
-                    b.HasIndex("doctorId");
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex("patientId");
+                    b.HasIndex("PatientId");
 
-                    b.HasIndex("timeSlotId")
+                    b.HasIndex("TimeSlotId")
                         .IsUnique();
 
-                    b.ToTable("Booking");
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DaySchedule", b =>
                 {
-                    b.Property<int>("dayScheduleId")
+                    b.Property<int>("DayScheduleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("dayScheduleId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DayScheduleId"));
 
-                    b.Property<int>("appointmentId")
+                    b.Property<int>("AppointmentId")
                         .HasColumnType("int");
 
-                    b.Property<short>("dayOfWeek")
+                    b.Property<short>("DayOfWeek")
                         .HasColumnType("smallint");
 
-                    b.HasKey("dayScheduleId");
+                    b.HasKey("DayScheduleId");
 
-                    b.HasIndex("appointmentId");
+                    b.HasIndex("AppointmentId");
 
-                    b.ToTable("DaySchedule");
+                    b.ToTable("DaySchedules");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DiscountCode", b =>
                 {
-                    b.Property<int>("discountCodeId")
+                    b.Property<int>("DiscountCodeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("discountCodeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiscountCodeId"));
 
-                    b.Property<string>("discountCode")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("discountType")
+                    b.Property<short>("DiscountType")
                         .HasColumnType("smallint");
 
-                    b.Property<decimal>("discountValue")
+                    b.Property<decimal>("DiscountValue")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("isValid")
+                    b.Property<bool>("IsValid")
                         .HasColumnType("bit");
 
-                    b.Property<int>("numberOfRequiredBookings")
+                    b.Property<int>("NumberOfRequiredBookings")
                         .HasColumnType("int");
 
-                    b.HasKey("discountCodeId");
+                    b.HasKey("DiscountCodeId");
 
                     b.ToTable("DiscountCode");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Feedback", b =>
                 {
-                    b.Property<int>("feedbackId")
+                    b.Property<int>("FeedbackId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("feedbackId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
 
-                    b.Property<int>("bookingId")
+                    b.Property<int>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<string>("doctorId")
+                    b.Property<string>("DoctorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("feedback")
+                    b.Property<string>("PatientFeedback")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("patientId")
+                    b.Property<string>("PatientId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("rating")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.HasKey("feedbackId");
+                    b.HasKey("FeedbackId");
 
-                    b.HasIndex("bookingId")
+                    b.HasIndex("BookingId")
                         .IsUnique();
 
-                    b.HasIndex("doctorId");
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex("patientId");
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Specialization", b =>
                 {
-                    b.Property<int>("specializationId")
+                    b.Property<int>("SpecializationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("specializationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SpecializationId"));
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("specializationId");
+                    b.HasKey("SpecializationId");
 
                     b.ToTable("Specializations");
 
                     b.HasData(
                         new
                         {
-                            specializationId = 1,
-                            name = "Cardiology"
+                            SpecializationId = 1,
+                            Name = "Cardiology"
                         },
                         new
                         {
-                            specializationId = 2,
-                            name = "Neurology"
+                            SpecializationId = 2,
+                            Name = "Neurology"
                         },
                         new
                         {
-                            specializationId = 3,
-                            name = "Oncology"
+                            SpecializationId = 3,
+                            Name = "Oncology"
                         },
                         new
                         {
-                            specializationId = 4,
-                            name = "Pediatrics"
+                            SpecializationId = 4,
+                            Name = "Pediatrics"
                         },
                         new
                         {
-                            specializationId = 5,
-                            name = "Gastroenterology"
+                            SpecializationId = 5,
+                            Name = "Gastroenterology"
                         },
                         new
                         {
-                            specializationId = 6,
-                            name = "Orthopedics"
+                            SpecializationId = 6,
+                            Name = "Orthopedics"
                         },
                         new
                         {
-                            specializationId = 7,
-                            name = "Dermatology"
+                            SpecializationId = 7,
+                            Name = "Dermatology"
                         },
                         new
                         {
-                            specializationId = 8,
-                            name = "Endocrinology"
+                            SpecializationId = 8,
+                            Name = "Endocrinology"
                         },
                         new
                         {
-                            specializationId = 9,
-                            name = "Ophthalmology"
+                            SpecializationId = 9,
+                            Name = "Ophthalmology"
                         },
                         new
                         {
-                            specializationId = 10,
-                            name = "Obstetrics and Gynecology"
+                            SpecializationId = 10,
+                            Name = "Obstetrics and Gynecology"
                         },
                         new
                         {
-                            specializationId = 11,
-                            name = "Urology"
+                            SpecializationId = 11,
+                            Name = "Urology"
                         },
                         new
                         {
-                            specializationId = 12,
-                            name = "Psychiatry"
+                            SpecializationId = 12,
+                            Name = "Psychiatry"
                         },
                         new
                         {
-                            specializationId = 13,
-                            name = "Anesthesiology"
+                            SpecializationId = 13,
+                            Name = "Anesthesiology"
                         },
                         new
                         {
-                            specializationId = 14,
-                            name = "Pulmonology"
+                            SpecializationId = 14,
+                            Name = "Pulmonology"
                         },
                         new
                         {
-                            specializationId = 15,
-                            name = "Rheumatology"
+                            SpecializationId = 15,
+                            Name = "Rheumatology"
                         },
                         new
                         {
-                            specializationId = 16,
-                            name = "Nephrology"
+                            SpecializationId = 16,
+                            Name = "Nephrology"
                         },
                         new
                         {
-                            specializationId = 17,
-                            name = "ENT (Ear, Nose, and Throat)"
+                            SpecializationId = 17,
+                            Name = "ENT (Ear, Nose, and Throat)"
                         },
                         new
                         {
-                            specializationId = 18,
-                            name = "Radiology"
+                            SpecializationId = 18,
+                            Name = "Radiology"
                         },
                         new
                         {
-                            specializationId = 19,
-                            name = "Immunology"
+                            SpecializationId = 19,
+                            Name = "Immunology"
                         },
                         new
                         {
-                            specializationId = 20,
-                            name = "Pathology"
+                            SpecializationId = 20,
+                            Name = "Pathology"
                         },
                         new
                         {
-                            specializationId = 21,
-                            name = "General Surgery"
+                            SpecializationId = 21,
+                            Name = "General Surgery"
                         },
                         new
                         {
-                            specializationId = 22,
-                            name = "Plastic Surgery"
+                            SpecializationId = 22,
+                            Name = "Plastic Surgery"
                         },
                         new
                         {
-                            specializationId = 23,
-                            name = "Neurosurgery"
+                            SpecializationId = 23,
+                            Name = "Neurosurgery"
                         },
                         new
                         {
-                            specializationId = 24,
-                            name = "Cardiothoracic Surgery"
+                            SpecializationId = 24,
+                            Name = "Cardiothoracic Surgery"
                         },
                         new
                         {
-                            specializationId = 25,
-                            name = "Vascular Surgery"
+                            SpecializationId = 25,
+                            Name = "Vascular Surgery"
                         },
                         new
                         {
-                            specializationId = 26,
-                            name = "Emergency Medicine"
+                            SpecializationId = 26,
+                            Name = "Emergency Medicine"
                         },
                         new
                         {
-                            specializationId = 27,
-                            name = "Sports Medicine"
+                            SpecializationId = 27,
+                            Name = "Sports Medicine"
                         },
                         new
                         {
-                            specializationId = 28,
-                            name = "Geriatrics"
+                            SpecializationId = 28,
+                            Name = "Geriatrics"
                         },
                         new
                         {
-                            specializationId = 29,
-                            name = "Hematology"
+                            SpecializationId = 29,
+                            Name = "Hematology"
                         },
                         new
                         {
-                            specializationId = 30,
-                            name = "Infectious Disease"
+                            SpecializationId = 30,
+                            Name = "Infectious Disease"
                         });
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.TimeSlot", b =>
                 {
-                    b.Property<int>("tiemSlotId")
+                    b.Property<int>("TiemSlotId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("tiemSlotId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TiemSlotId"));
 
-                    b.Property<int>("dayScheduleId")
+                    b.Property<int>("DayScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("endTime")
+                    b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<bool>("isBooked")
+                    b.Property<bool>("IsBooked")
                         .HasColumnType("bit");
 
-                    b.Property<TimeSpan>("startTime")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
-                    b.HasKey("tiemSlotId");
+                    b.HasKey("TiemSlotId");
 
-                    b.HasIndex("dayScheduleId");
+                    b.HasIndex("DayScheduleId");
 
-                    b.ToTable("TimeSlot");
+                    b.ToTable("TimeSlots");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.ApplicationUser", b =>
@@ -555,6 +552,9 @@ namespace Vezeeta.Repository.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("date");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -562,6 +562,17 @@ namespace Vezeeta.Repository.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("Gender")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -596,20 +607,6 @@ namespace Vezeeta.Repository.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<DateTime>("dateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<string>("firstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<short>("gender")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -629,20 +626,20 @@ namespace Vezeeta.Repository.Migrations
                         {
                             Id = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "105ede58-4581-4317-9abd-89731456e1d8",
+                            ConcurrencyStamp = "8e52e959-11a7-43b0-893c-e01dd3d2ae81",
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@vezeeta.com",
                             EmailConfirmed = true,
+                            FirstName = "Admin",
+                            Gender = (short)0,
+                            LastName = "Vezeeta",
                             LockoutEnabled = false,
                             NormalizedUserName = "admin@vezeeta.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOZOuzT3ORVgr/QGWhfvrXWYnADb59NhdBLSSW0rHmEQKH6ukY1XyVVpA+/F/iUZ4A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELD+TeCS9AkGNCmqWtKEClnFhwqsqH2+JkMm9F9bGqvQFbw4F92d6WCpUwNvLl7ayQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6b79d100-e728-4e06-92bd-b4fd35f6ae7d",
+                            SecurityStamp = "90e83f18-302f-45db-bdec-4fb27356dc4b",
                             TwoFactorEnabled = false,
-                            UserName = "admin@vezeeta.com",
-                            dateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            firstName = "Admin",
-                            gender = (short)0,
-                            lastName = "Vezeeta"
+                            UserName = "admin@vezeeta.com"
                         });
                 });
 
@@ -650,14 +647,14 @@ namespace Vezeeta.Repository.Migrations
                 {
                     b.HasBaseType("Vezeeta.Core.Models.Users.ApplicationUser");
 
-                    b.Property<string>("photoPath")
+                    b.Property<string>("Photo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("specializationId")
+                    b.Property<int>("SpecializationId")
                         .HasColumnType("int");
 
-                    b.HasIndex("specializationId");
+                    b.HasIndex("SpecializationId");
 
                     b.ToTable("Doctors", (string)null);
                 });
@@ -666,7 +663,7 @@ namespace Vezeeta.Repository.Migrations
                 {
                     b.HasBaseType("Vezeeta.Core.Models.Users.ApplicationUser");
 
-                    b.Property<string>("photoPath")
+                    b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Patients", (string)null);
@@ -725,97 +722,97 @@ namespace Vezeeta.Repository.Migrations
 
             modelBuilder.Entity("Vezeeta.Core.Models.Appointment", b =>
                 {
-                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
-                        .WithMany("appointments")
-                        .HasForeignKey("doctorId")
+                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "Doctor")
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("doctor");
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Booking", b =>
                 {
-                    b.HasOne("Vezeeta.Core.Models.DiscountCode", "discountCode")
-                        .WithMany("bookings")
-                        .HasForeignKey("discountCodeId")
+                    b.HasOne("Vezeeta.Core.Models.DiscountCode", "DiscountCode")
+                        .WithMany("Bookings")
+                        .HasForeignKey("DiscountCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
-                        .WithMany("bookings")
-                        .HasForeignKey("doctorId")
+                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "Doctor")
+                        .WithMany("Bookings")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.Users.Patient", "patient")
-                        .WithMany("bookings")
-                        .HasForeignKey("patientId")
+                    b.HasOne("Vezeeta.Core.Models.Users.Patient", "Patient")
+                        .WithMany("Bookings")
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.TimeSlot", "timeSlot")
+                    b.HasOne("Vezeeta.Core.Models.TimeSlot", "TimeSlot")
                         .WithOne()
-                        .HasForeignKey("Vezeeta.Core.Models.Booking", "timeSlotId")
+                        .HasForeignKey("Vezeeta.Core.Models.Booking", "TimeSlotId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("discountCode");
+                    b.Navigation("DiscountCode");
 
-                    b.Navigation("doctor");
+                    b.Navigation("Doctor");
 
-                    b.Navigation("patient");
+                    b.Navigation("Patient");
 
-                    b.Navigation("timeSlot");
+                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DaySchedule", b =>
                 {
-                    b.HasOne("Vezeeta.Core.Models.Appointment", "appointment")
-                        .WithMany("daySchedules")
-                        .HasForeignKey("appointmentId")
+                    b.HasOne("Vezeeta.Core.Models.Appointment", "Appointment")
+                        .WithMany("DaySchedules")
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("appointment");
+                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Feedback", b =>
                 {
-                    b.HasOne("Vezeeta.Core.Models.Booking", "booking")
-                        .WithOne("feedback")
-                        .HasForeignKey("Vezeeta.Core.Models.Feedback", "bookingId")
+                    b.HasOne("Vezeeta.Core.Models.Booking", "Booking")
+                        .WithOne("Feedback")
+                        .HasForeignKey("Vezeeta.Core.Models.Feedback", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "doctor")
-                        .WithMany("feedbacks")
-                        .HasForeignKey("doctorId")
+                    b.HasOne("Vezeeta.Core.Models.Users.Doctor", "Doctor")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.Users.Patient", "patient")
-                        .WithMany("feedbacks")
-                        .HasForeignKey("patientId")
+                    b.HasOne("Vezeeta.Core.Models.Users.Patient", "Patient")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("booking");
+                    b.Navigation("Booking");
 
-                    b.Navigation("doctor");
+                    b.Navigation("Doctor");
 
-                    b.Navigation("patient");
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.TimeSlot", b =>
                 {
-                    b.HasOne("Vezeeta.Core.Models.DaySchedule", "daySchedule")
-                        .WithMany("timeSlots")
-                        .HasForeignKey("dayScheduleId")
+                    b.HasOne("Vezeeta.Core.Models.DaySchedule", "DaySchedule")
+                        .WithMany("TimeSlots")
+                        .HasForeignKey("DayScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("daySchedule");
+                    b.Navigation("DaySchedule");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Doctor", b =>
@@ -826,13 +823,13 @@ namespace Vezeeta.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vezeeta.Core.Models.Specialization", "specialization")
+                    b.HasOne("Vezeeta.Core.Models.Specialization", "Specialization")
                         .WithMany("Doctors")
-                        .HasForeignKey("specializationId")
+                        .HasForeignKey("SpecializationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("specialization");
+                    b.Navigation("Specialization");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Patient", b =>
@@ -846,22 +843,22 @@ namespace Vezeeta.Repository.Migrations
 
             modelBuilder.Entity("Vezeeta.Core.Models.Appointment", b =>
                 {
-                    b.Navigation("daySchedules");
+                    b.Navigation("DaySchedules");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Booking", b =>
                 {
-                    b.Navigation("feedback");
+                    b.Navigation("Feedback");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DaySchedule", b =>
                 {
-                    b.Navigation("timeSlots");
+                    b.Navigation("TimeSlots");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DiscountCode", b =>
                 {
-                    b.Navigation("bookings");
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Specialization", b =>
@@ -871,18 +868,18 @@ namespace Vezeeta.Repository.Migrations
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Doctor", b =>
                 {
-                    b.Navigation("appointments");
+                    b.Navigation("Appointments");
 
-                    b.Navigation("bookings");
+                    b.Navigation("Bookings");
 
-                    b.Navigation("feedbacks");
+                    b.Navigation("Feedbacks");
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.Patient", b =>
                 {
-                    b.Navigation("bookings");
+                    b.Navigation("Bookings");
 
-                    b.Navigation("feedbacks");
+                    b.Navigation("Feedbacks");
                 });
 #pragma warning restore 612, 618
         }

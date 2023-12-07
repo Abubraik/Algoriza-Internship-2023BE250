@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.ComponentModel;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Repository.DataSeed;
@@ -41,16 +39,16 @@ namespace Vezeeta.Repository
             dateTime => DateOnly.FromDateTime(dateTime));
 
             modelBuilder.Entity<TimeSlot>()
-                .Property(e => e.startTime)
+                .Property(e => e.StartTime)
                 .HasColumnType("time")
                 .HasConversion(timeOnlyConverter);
             modelBuilder.Entity<TimeSlot>()
-                .Property(e => e.endTime)
+                .Property(e => e.EndTime)
                 .HasColumnType("time")
                 .HasConversion(timeOnlyConverter);
 
             modelBuilder.Entity<ApplicationUser>()
-                .Property(e => e.dateOfBirth)
+                .Property(e => e.DateOfBirth)
                 .HasColumnType("date")
                 .HasConversion(dateOnlyConverter);
 
@@ -73,30 +71,31 @@ namespace Vezeeta.Repository
             modelBuilder.Entity<Doctor>(e => e.ToTable("Doctors"));
 
             modelBuilder.Entity<ApplicationUser>()
-                .Property(e => e.dateOfBirth)
+                .Property(e => e.DateOfBirth)
                 .HasColumnType("date");
             modelBuilder.Entity<Booking>()
-            .HasOne(b => b.patient)
-            .WithMany(p => p.bookings)
-            .HasForeignKey(b => b.patientId)
+            .HasOne(b => b.Patient)
+            .WithMany(p => p.Bookings)
+            .HasForeignKey(b => b.PatientId)
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
-            .HasOne(b => b.timeSlot)
+            .HasOne(b => b.TimeSlot)
             .WithOne()
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Feedback>()
-                .HasOne(b=>b.doctor)
-                .WithMany(b=>b.feedbacks)
-                .HasForeignKey(b=>b.doctorId)
+                .HasOne(b=>b.Doctor)
+                .WithMany(b=>b.Feedbacks)
+                .HasForeignKey(b=>b.DoctorId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Feedback>()
-                .HasOne(b => b.patient)
-                .WithMany(b => b.feedbacks)
-                .HasForeignKey(b => b.patientId)
+                .HasOne(b => b.Patient)
+                .WithMany(b => b.Feedbacks)
+                .HasForeignKey(b => b.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+ 
             #region
             //modelBuilder.Entity<TimeSlot>()
             //    .Property(e => e.startTime)
@@ -125,7 +124,10 @@ namespace Vezeeta.Repository
 
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Patient> Patients { get; set; }
-
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<DaySchedule> DaySchedules { get; set; }
+        public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
 

@@ -15,12 +15,12 @@ namespace Vezeeta.Repository.Repositories
         public IBaseRepository<ApplicationUser> Users {  get; private set; }
         public IBaseRepository<Doctor> Doctors { get; private set; }
         public IBaseRepository<Patient> Patients { get; private set; }
-
+        public IBaseRepository<TimeSlot> TimeSlots { get; private set; }
+        public IBaseRepository<Feedback> Feedbacks { get; private set; }
         public IBaseRepository<Specialization> Specializations { get; private set; }
-
+        public IBaseRepository<DiscountCode> DiscountCodes { get; private set; }
         public IBaseRepository<Appointment> Appointments { get; private set; }
-
-        public IBaseRepository<DiscountCode> Discounts { get; private set; }
+        public IBaseRepository<DaySchedule> DaySchedules { get; private set; }
 
         public IBaseRepository<Booking> Bookings { get; private set; }
 
@@ -32,8 +32,11 @@ namespace Vezeeta.Repository.Repositories
             Patients = new BaseRepository<Patient>(context);
             Specializations = new BaseRepository<Specialization>(context);
             Appointments = new BaseRepository<Appointment>(context);
-            Discounts = new BaseRepository<DiscountCode>(context);
+            DaySchedules = new BaseRepository<DaySchedule>(context);
+            TimeSlots = new BaseRepository<TimeSlot>(context);
             Bookings = new BaseRepository<Booking>(context);
+            Feedbacks = new BaseRepository<Feedback>(context);
+            DiscountCodes = new BaseRepository<DiscountCode>(context);
         }
 
 

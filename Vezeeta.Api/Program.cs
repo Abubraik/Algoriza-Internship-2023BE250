@@ -1,19 +1,15 @@
-
-using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Writers;
-using NETCore.MailKit.Core;
-using System.Text.Json.Serialization;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Core.Services;
 using Vezeeta.Repository;
 using Vezeeta.Repository.Repositories;
 using Vezeeta.Service.Services;
 using Vezeeta.Sevices.Models;
 using Vezeeta.Sevices.Services;
+using Vezeeta.Sevices.Services.Interfaces;
+
 
 namespace Vezeeta.Api
 {
@@ -27,7 +23,7 @@ namespace Vezeeta.Api
             builder.Services.AddControllers();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnection"),
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaulConnection"),
             b=> b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
             ));
 
@@ -42,14 +38,14 @@ namespace Vezeeta.Api
 
             builder.Services.AddIdentityCore<Doctor>().AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddIdentityCore<Patient>().AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-                options.Cookie.IsEssential = true;
-                options.SlidingExpiration = true; 
-                options.Cookie.SameSite = SameSiteMode.Strict;
-                options.Cookie.MaxAge = null;
-            });
+            //builder.Services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+            //    options.Cookie.IsEssential = true;
+            //    options.SlidingExpiration = true; 
+            //    options.Cookie.SameSite = SameSiteMode.Strict;
+            //    options.Cookie.MaxAge = null;
+            //});
             //Add Email required
             //builder.Services.Configure<IdentityOptions>(options => options.SignIn.RequireConfirmedEmail = true);
 
@@ -58,17 +54,20 @@ namespace Vezeeta.Api
                 .GetSection("EmailConfig")
                 .Get<EmailConfiguration>();
             builder.Services.AddSingleton(emailConfig);
-            builder.Services.AddScoped<Core.Services.IMailService, Sevices.Services.MailService>();
+            builder.Services.AddScoped<IMailService, MailService>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 
 
             //builder.Services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>) );
-            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddTransient<IAdminService, AdminService>();
-            builder.Services.AddTransient<IPatientService,PatientService>();
-            builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IUserManagementSevice, UserManagementSevice>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
+            builder.Services.AddScoped<IPatientService,PatientService>();
+
+            builder.Services.AddAutoMapper(typeof(Vezeeta.Sevices.Helpers.Mappers));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

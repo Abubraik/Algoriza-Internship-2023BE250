@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NETCore.MailKit.Core;
-using Vezeeta.Core.DTOs;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Core.Services;
-using Vezeeta.Service.Services;
-using Vezeeta.Sevices.Helpers;
 using Vezeeta.Sevices.Models;
-using Vezeeta.Sevices.Services;
+using Vezeeta.Sevices.Models.DTOs;
+using Vezeeta.Sevices.Services.Interfaces;
 
 namespace Vezeeta.Api.Controllers
 {
@@ -34,20 +29,20 @@ namespace Vezeeta.Api.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterPatient([FromBody] AccountModel model)
-        {
-            if (ModelState.IsValid)
-            {
+        //public async Task<IActionResult> RegisterPatient([FromBody] AccountModelDto model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
 
-                string result= await _patientService.AddPatient(model);
-                if (result == "OK") 
-                    return Ok("Registered successfully, please check you email for confirmation");
+        //        string result= await _patientService.AddPatient(model);
+        //        if (result == "OK") 
+        //            return Ok("Registered successfully, please check you email for confirmation");
                 
-                return BadRequest(result);
+        //        return BadRequest(result);
                 
-            }
-            return BadRequest(ModelState);
-        }
+        //    }
+        //    return BadRequest(ModelState);
+        //}
         [HttpGet("TEST")]
         public IActionResult TestEmail()
         {

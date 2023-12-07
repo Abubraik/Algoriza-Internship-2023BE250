@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sevices\Vezeeta.Sevices.csproj" />
     <ProjectReference Include="..\Vezeeta.Core\Vezeeta.Core.csproj" />
     <ProjectReference Include="..\Vezeeta.Repository\Vezeeta.Repository.csproj" />
+    <ProjectReference Include="..\Vezeeta.Sevices\Vezeeta.Sevices.csproj" />
   </ItemGroup>
 
 </Project>

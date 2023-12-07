@@ -12,27 +12,27 @@ namespace Vezeeta.Core.Models
     public class Booking
     {
         [Key]
-        public int bookingId { get; set; }
+        public int BookingId { get; set; }
         [Required]
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
         [Required]
-        public decimal finalPrice { get; set; }
+        public decimal FinalPrice { get; set; }
         [Required]
-        public Status status { get; set; }
+        public Status Status { get; set; }
 
         [Required]
-        public int timeSlotId { get; set; }
-        public virtual TimeSlot timeSlot { get; set; }
+        public int TimeSlotId { get; set; }
+        public TimeSlot TimeSlot { get; set; }
         [Required]
-        public int discountCodeId { get; set; }
-        public virtual DiscountCode? discountCode { get; set; }
+        public int DiscountCodeId { get; set; }
+        public DiscountCode? DiscountCode { get; set; }
         [Required]
-        public string patientId { get; set; }
-        public virtual Patient patient{ get; set; }
+        public string PatientId { get; set; }
+        public Patient Patient { get; set; }
         [Required]
-        public string doctorId { get; set; }
-        public virtual Doctor doctor { get; set; }
-        public virtual Feedback? feedback { get; set; }
+        public string DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
+        public Feedback? Feedback { get; set; }
 
     }
 }

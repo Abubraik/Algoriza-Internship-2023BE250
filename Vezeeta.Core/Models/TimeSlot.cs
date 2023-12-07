@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,18 @@ namespace Vezeeta.Core.Models
     public class TimeSlot
     {
         [Key]
-        public int tiemSlotId { get; set; }
+        public int TiemSlotId { get; set; }
         [Required]
-        public TimeOnly startTime { get; set; }
+        public TimeOnly StartTime { get; set; }
         [Required]
-        public TimeOnly endTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         [Required]
-        public bool isBooked { get; set; }
+        [DefaultValue("false")]
+        public bool IsBooked { get; set; }
 
         [Required]
-        public int dayScheduleId { get; set; }
-        public virtual DaySchedule daySchedule {  get; set; }
+        public int DayScheduleId { get; set; }
+        public DaySchedule DaySchedule { get; set; }
 
     }
 }

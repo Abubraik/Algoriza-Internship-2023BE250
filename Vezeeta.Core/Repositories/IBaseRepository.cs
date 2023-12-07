@@ -9,10 +9,11 @@ namespace Vezeeta.Core.Repositories
 {
     public interface IBaseRepository<T> where T : class
     {
-        ValueTask<T> GetByIdAsync(string id);
+        Task<T> GetByIdAsync(string id);
         IQueryable<T> GetAll();
-        Task<T> Find(Expression<Func<T, bool>> predicate);
-        //Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
+        Task<T> Find(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>> predicate, int skip, int take, string[] includes = null);
         Task AddAsync(T entity);
         //Task AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);

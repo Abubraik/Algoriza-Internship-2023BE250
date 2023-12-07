@@ -6,10 +6,10 @@ namespace Vezeeta.Core.Models
     public class Specialization
     {
         [Key]
-        public int specializationId { get; set; }
+        public int SpecializationId { get; set; }
         [Required]
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public virtual List<Doctor> Doctors { get; set; }
+        public List<Doctor> Doctors { get; set; }
     }
 }

@@ -6,11 +6,11 @@ namespace Vezeeta.Core.Models
     public class Appointment
     {
         [Key]
-        public int appointmentId{ get; set; }
-        public decimal price { get; set; }
+        public int AppointmentId{ get; set; }
+        public decimal Price { get; set; }
 
-        public string doctorId { get; set; }
-        public virtual Doctor doctor{ get; set; }
-        public virtual List<DaySchedule> daySchedules { get; set; }
+        public string DoctorId { get; set; }
+        public  Doctor Doctor{ get; set; }
+        public  List<DaySchedule> DaySchedules { get; set; }
     }
 }

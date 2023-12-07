@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Vezeeta.Core.Repositories;
 
 namespace Vezeeta.Repository.Repositories
@@ -27,7 +22,7 @@ namespace Vezeeta.Repository.Repositories
         //    return await _entities.Skip((pageNumber * 1) * pageSize).Take(pageSize).ToListAsync();
         //}
 
-        public async ValueTask<T> GetByIdAsync(string id)
+        public async Task<T> GetByIdAsync(string id)
         {
             return await _entities.FindAsync(id);
         }
@@ -42,6 +37,7 @@ namespace Vezeeta.Repository.Repositories
            await _entities.AddAsync(entity);
             
         }
+
         public async Task UpdateAsync(T entity)
         {
             _entities.Update(entity);
@@ -52,17 +48,45 @@ namespace Vezeeta.Repository.Repositories
              _entities.Remove(entity);
         }
 
-        public async Task<T> Find(Expression<Func<T, bool>> predicate)
+        public async Task<T> Find(Expression<Func<T, bool>> predicate, string[] includes = null)
         {
-            return await _entities.Where(predicate).SingleOrDefaultAsync();
+            IQueryable<T> query = _entities;
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+            return await query.SingleOrDefaultAsync(predicate);
+        }
+        public async Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>> predicate,string[] includes = null)
+        {
+            IQueryable<T> queryable = _entities;
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    queryable = queryable.Include(include);
+                }
+            }
+            return await queryable.Where(predicate).ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>> predicate, int take, int skip,string[] includes = null)
+        {
+            IQueryable<T> queryable = _entities;
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    queryable = queryable.Include(include);
+                }
+            }
+            return await queryable.Where(predicate).Skip(skip).Take(take).ToListAsync();
+        }
 
-
-        //public  IEnumerable<T> GetData(int pageNumber, int PageSize)
-        //{
-        //    return _entities.Skip((pageNumber * 1) * PageSize).Take(PageSize);
-        //    //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
-        //}
-    }
+            //public  IEnumerable<T> GetData(int pageNumber, int PageSize)
+            //{
+            //    return _entities.Skip((pageNumber * 1) * PageSize).Take(PageSize);
+            //    //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
+            //}
+        }
 }

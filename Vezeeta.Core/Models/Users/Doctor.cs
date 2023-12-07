@@ -11,14 +11,14 @@ namespace Vezeeta.Core.Models.Users
     public class Doctor : ApplicationUser
     {
         [Required]
-        public int specializationId { get; set; }
+        public int SpecializationId { get; set; }
         [Required]
-        public required string photoPath { get; set; }
-        public virtual Specialization specialization { get; set; }
+        public required string Photo { get; set; }
+        public  Specialization Specialization { get; set; }
 
-        public virtual List<Appointment> appointments { get; set; }
-        public virtual List<Booking> bookings { get; set; }
-        public virtual List<Feedback> feedbacks { get; set; }
+        public List<Appointment> Appointments { get; set; }
+        public List<Booking> Bookings { get; set; }
+        public List<Feedback> Feedbacks { get; set; }
 
     }
 }

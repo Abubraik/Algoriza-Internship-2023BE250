@@ -12,20 +12,20 @@ namespace Vezeeta.Core.Models
     public class Feedback
     {
         [Key]
-        public int feedbackId { get; set; }
+        public int FeedbackId { get; set; }
         [Required]
-        public string feedback { get; set; }
+        public string PatientFeedback { get; set; }
         [Required]
-        public int rating { get; set; }
+        public int Rating { get; set; }
 
         [Required]
-        public int bookingId { get; set; }
-        public virtual Booking booking { get; set; }
+        public int BookingId { get; set; }
+        public Booking Booking { get; set; }
         [Required]
-        public string patientId { get; set; }
-        public virtual Patient patient { get; set; }
+        public string PatientId { get; set; }
+        public Patient Patient { get; set; }
         [Required]
-        public string doctorId { get; set; }
-        public virtual Doctor doctor { get; set; }  
+        public string DoctorId { get; set; }
+        public Doctor Doctor { get; set; }
     }
 }
