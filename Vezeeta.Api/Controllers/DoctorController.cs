@@ -30,18 +30,18 @@ namespace Vezeeta.Api.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<Appointment> UpdateAppointmentTimeAsync([FromBody] UpdateAppointmentTimeDto appointmentDto)
+        public async Task<IActionResult> UpdateAppointmentTimeAsync([FromBody] UpdateAppointmentTimeDto appointmentDto)
         {
             var appointment = await _doctorService.UpdateAppointmentTimeAsync(appointmentDto, User.Identity!.Name!);
-            if (appointment == null) return null;
-            return appointment;
+            if (!appointment.IsSuccess) return BadRequest(appointment.Message);
+            return Ok(appointment.Message);
 
         }
 
         [HttpDelete("delete")]
         public async Task<bool> DeletAppointmentAsync(int timeId)
         {
-            return await _doctorService.DeleteAppointmentAsync(timeId,User.Identity!.Name!);
+            return (await _doctorService.DeleteAppointmentAsync(timeId,User.Identity!.Name!)).IsSuccess? true : false;
         }
     }
 }

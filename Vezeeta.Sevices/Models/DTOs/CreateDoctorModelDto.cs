@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,8 +10,9 @@ using Vezeeta.Core.Models;
 using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Sevices.Models.DTOs { 
-    public class DoctorModelDto : AccountModelDto
+    public class CreateDoctorModelDto : AccountModelDto
     {
+
         //[Required]
         //public string id { get; set; }
         //[Required(ErrorMessage = "First Name is required"), MinLength(3)]
@@ -26,7 +28,9 @@ namespace Vezeeta.Sevices.Models.DTOs {
 
         //[Required(ErrorMessage = "Date Of Birth is required")]
         //public DateOnly dateOfBirth { get; set; }
-        public required string Photo { get; set; }
+        [Required]
+        public required IFormFile Photo { get; set; }
+        [Required]
         public required string Specialization { get; set; }
     }
 }

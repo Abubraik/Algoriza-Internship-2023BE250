@@ -17,8 +17,7 @@ namespace Vezeeta.Sevices.Services.Interfaces
 
         //Doctors
         Task<Doctor> GetDoctorById(string id);
-        Task<Doctor> AddDoctor(DoctorModelDto doctor);
-        Task<Doctor> EditDoctor(string id, DoctorModelDto doctor);
+        Task<Doctor> EditDoctor(string id, CreateDoctorModelDto doctor);
         Task<bool> DeleteDoctor(string id);
 
         //Settings

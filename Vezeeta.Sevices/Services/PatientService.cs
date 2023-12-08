@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Sevices.Helpers;
 using Vezeeta.Sevices.Models;
 using Vezeeta.Sevices.Services.Interfaces;
 

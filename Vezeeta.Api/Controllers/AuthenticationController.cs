@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Configuration.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices;
@@ -17,6 +18,7 @@ namespace Vezeeta.Api.Controllers
     [ApiController]
     public class AuthenticationController : Controller
     {
+        #region old
         //private readonly UserManager<ApplicationUser> _userManager;
         //private readonly SignInManager<ApplicationUser> _signInManager;
         //private readonly IUnitOfWork _unitOfWork;
@@ -125,34 +127,42 @@ namespace Vezeeta.Api.Controllers
         //    return BadRequest("This user is NOT valid! ");
         //}
 
+        #endregion
         private readonly IUserManagementService _userManagementService;
         private readonly IMailService _mailService;
-
+        private string _password;
         public AuthenticationController(IUserManagementService userManagementService, IMailService mailService)
         {
             _userManagementService = userManagementService ?? throw new ArgumentNullException(nameof(userManagementService));
             _mailService = mailService ?? throw new ArgumentNullException(nameof(mailService));
+            _password = HelperFunctions.GenerateRandomPassword();
         }
 
         [HttpPost("RegisterPatient")]
-        public async Task<IActionResult> RegisterPatient(AccountModelDto model)
+        public async Task<IActionResult> RegisterPatient([FromForm]CreatePatientModel model)
         {
-            var response = await _userManagementService.CreateUserAsync(model);
-            return response.IsSuccess ? Ok(CreateRegistrationResponse(model, response.Response))
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var response = await _userManagementService.CreateUserAsync(model,_password);
+            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email,_password, response.Response))
                                       : BadRequest(response.Message);
         }
 
         [HttpPost("Admin/RegisterDoctor")]
-        public async Task<IActionResult> RegisterDoctor(DoctorModelDto model)
+        public async Task<IActionResult> RegisterDoctor([FromForm]CreateDoctorModelDto model)
         {
-            var response = await _userManagementService.CreateUserAsync(model);
-            return response.IsSuccess ? Ok(CreateRegistrationResponse(model, response.Response))
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var response = await _userManagementService.CreateUserAsync(model, _password);
+            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email, _password, response.Response))
                                       : BadRequest(response.Message);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var (isSuccess, message) = await _userManagementService.AuthenticateUserAsync(model);
             return isSuccess ? Ok(message) : BadRequest(message);
         }
@@ -171,11 +181,11 @@ namespace Vezeeta.Api.Controllers
             return response.IsSuccess ? Ok(response.Message) : BadRequest(response.Message);
         }
 
-        private object CreateRegistrationResponse(AccountModelDto model, string token)
+        private IActionResult CreateRegistrationResponse(string email,string password, string token)
         {
-            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = model.Email }, HttpContext.Request.Scheme);
-            _mailService.SendEmail("Confirmation",model.Email, model._password, token, confirmationLink);
-            return new { Message = "Account created successfully, please check your email for confirmation" };
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { token = token, email = email }, HttpContext.Request.Scheme);
+            _mailService.SendEmail("Confirmation",email, password, token, confirmationLink);
+            return Ok(new { Message = "Account created successfully, please check your email for confirmation" });
         }
 
 

@@ -1,15 +1,13 @@
-﻿using Vezeeta.Core.Models.Users;
-using Vezeeta.Core.Models;
-using Vezeeta.Sevices.Helpers;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Vezeeta.Core.Models.Users;
+using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices.Models;
 using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
-using AutoMapper;
-using Vezeeta.Core.Repositories;
-using Microsoft.AspNetCore.Identity;
-using System.Numerics;
-using System.Web.Providers.Entities;
-using System.Security.Claims;
 
 namespace Vezeeta.Sevices.Services
 {
@@ -19,129 +17,46 @@ namespace Vezeeta.Sevices.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         public readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public UserManagementSevice(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
+        public UserManagementSevice(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager, IMapper mapper, IHostingEnvironment hostingEnvironment)
         {
             this._unitOfWork = unitOfWork;
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._mapper = mapper;
+            this._hostingEnvironment = hostingEnvironment;
         }
-        //public async Task<ApiResponse<string>> CreateDoctorUser(DoctorModelDto registerDoctor)
-        //{
-        //    //Check user if exist
-        //    var user = await _userManager.FindByEmailAsync(registerDoctor.Email);
-        //    if (user != null)
-        //        return new ApiResponse<string>
-        //        { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
 
-        //    //Check specialization
-        //    Specialization specialization =
-        //        await _unitOfWork
-        //        .Specializations
-        //        .Find(e => e.Name == registerDoctor.Specialization);
-        //    if (specialization == null)
-        //        return new ApiResponse<string>
-        //        { IsSuccess = false, StatusCode = 403, Message = "Specialization NOT found!." };
-        //    //Create user
-        //    Doctor doctor = _mapper.Map<Doctor>(registerDoctor);
-        //    string password = HelperFunctions.GenerateRandomPassword();
-        //    var result = await _userManager.CreateAsync(doctor, password);
-        //    if (!result.Succeeded)
-        //    {
-        //        return new ApiResponse<string>
-        //        { IsSuccess = false, StatusCode = 500, Message = "User failed to create!" };
-        //    }
-        //    await _userManager.AddToRoleAsync(doctor, "Doctor");
-        //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(doctor);
-
-        //    return new ApiResponse<string>
-        //    { IsSuccess = true, StatusCode = 201, Message = "User created successfully!", Response = token };
-        //}
-
-        //public async Task<ApiResponse<string>> CreatePatientUser(AccountModelDto registerPatient)
-        //{
-        //    //Check user if exist
-        //    var user = await _userManager.FindByEmailAsync(registerPatient.Email);
-        //    if (user != null)
-        //        return new ApiResponse<string>
-        //        { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
-        //    //Create user
-        //    Patient patient = _mapper.Map<Patient>(registerPatient);
-        //    var result = await _userManager.CreateAsync(patient, registerPatient._password);
-        //    if (!result.Succeeded)
-        //    {
-        //        return new ApiResponse<string>
-        //        { IsSuccess = false, StatusCode = 500, Message = "User failed to create!" };
-        //    }
-        //    await _userManager.AddToRoleAsync(patient, "Patient");
-        //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(patient);
-
-        //    return new ApiResponse<string>
-        //    { IsSuccess = true, StatusCode = 201, Message = "User created successfully!", Response = token };
-        //}
-
-
-        //    public async Task<ApiResponse<string>> CreateUser<T>(T registerUser) where T : AccountModelDto
-        //    {
-        //        var user = await _userManager.FindByEmailAsync(registerUser.Email);
-        //        if (user != null)
-        //        {
-        //            return new ApiResponse<string>
-        //            { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
-        //        }
-
-        //        ApplicationUser applicationUser = GetUserEntity(registerUser);
-        //        var result = await _userManager.CreateAsync(applicationUser, registerUser._password);
-
-        //        if (!result.Succeeded)
-        //        {
-        //            return new ApiResponse<string>
-        //            { IsSuccess = false, StatusCode = 500, Message = "User failed to create!" };
-        //        }
-
-        //        string role = GetRoleForUserType<T>();
-        //        await _userManager.AddToRoleAsync(applicationUser, role);
-        //        var token = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-
-        //        return new ApiResponse<string>
-        //        { IsSuccess = true, StatusCode = 201, Message = "User created successfully!", Response = token };
-        //    }
-
-        //    private ApplicationUser GetUserEntity<T>(T registerUser) where T : AccountModelDto
-        //    {
-        //        if (registerUser is DoctorModelDto doctorDto)
-        //        {
-        //            var specialization = _unitOfWork.Specializations.Find(e => e.Name == doctorDto.Specialization).Result;
-        //            if (specialization == null)
-        //            {
-        //                throw new ArgumentException("Specialization NOT found!.");
-        //            }
-
-        //            var doctor = _mapper.Map<Doctor>(registerUser, opts => opts.Items["Specialization"] = specialization);
-        //            return doctor;
-        //        }
-        //        else
-        //        {
-        //            return _mapper.Map<Patient>(registerUser);
-        //        }
-        //    }
-
-        //    private static string GetRoleForUserType<T>() where T : AccountModelDto
-        //    {
-        //        return typeof(T) == typeof(DoctorModelDto) ? "Doctor" : "Patient";
-        //    }
-        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser) where T : AccountModelDto
+        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password) where T : AccountModelDto
         {
             if (await UserExistsAsync(registerUser.Email))
             {
                 return new ApiResponse<string>
                 { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
-
             }
 
-            var applicationUser = GetUserEntity(registerUser);
-            var createResult = await _userManager.CreateAsync(applicationUser, registerUser._password);
+            string photoPath = null;
+
+            if (registerUser is CreateDoctorModelDto doctorDto && doctorDto.Photo != null)
+            {
+                // If it's a doctor registration, the photo is required.
+                photoPath = await SavePhotoAsync(doctorDto.Photo);
+                if (photoPath == null)
+                {
+                    return new ApiResponse<string>
+                    { IsSuccess = false, StatusCode = 400, Message = "Photo is required for doctors." };
+                }
+            }
+            else if (registerUser is CreatePatientModel patientDto && patientDto.Photo != null)
+            {
+                // If it's a patient registration and a photo is provided, it's optional.
+                photoPath = await SavePhotoAsync(patientDto.Photo);
+            }
+
+            var applicationUser = GetUserEntity(registerUser, photoPath);
+            var createResult = await _userManager.CreateAsync(applicationUser, _password);
 
             if (!createResult.Succeeded)
             {
@@ -157,7 +72,8 @@ namespace Vezeeta.Sevices.Services
             { IsSuccess = true, StatusCode = 201, Message = "User created successfully!", Response = token };
         }
 
-        // Combine common logic for authentication and user creation
+        //    Combine common logic for authentication and user creation
+
         public async Task<(bool IsSuccess, string Message)> AuthenticateUserAsync(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Email);
@@ -208,16 +124,17 @@ namespace Vezeeta.Sevices.Services
             return (true, "Signed Out Successfully!");
         }
 
-            // Helper methods
-            private async Task<bool> UserExistsAsync(string email)
+        // Helper methods
+        private async Task<bool> UserExistsAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             return user != null;
         }
 
-        private ApplicationUser GetUserEntity<T>(T registerUser) where T : AccountModelDto
+        private ApplicationUser GetUserEntity<T>(T registerUser, string photoPath = "") where T : AccountModelDto
         {
-            if (registerUser is DoctorModelDto doctorDto)
+            ApplicationUser applicationUser = null;
+            if (registerUser is CreateDoctorModelDto doctorDto)
             {
                 var specialization = _unitOfWork.Specializations.Find(e => e.Name == doctorDto.Specialization).Result;
                 if (specialization == null)
@@ -225,14 +142,24 @@ namespace Vezeeta.Sevices.Services
                     throw new ArgumentException("Specialization NOT found!.");
                 }
 
-                var doctor = _mapper.Map<Doctor>(registerUser);
+                var doctor = _mapper.Map<Doctor>(doctorDto, opts => opts.Items["Photo"] = photoPath); // Assuming the mapper is configured properly to handle Doctor mapping
                 doctor.Specialization = specialization;
-                return doctor;
+                //doctor.Photo = photoPath;
+                applicationUser = doctor;
             }
-            else
+            else if (registerUser is CreatePatientModel patientDto)
             {
-                return _mapper.Map<Patient>(registerUser);
+                var patient = _mapper.Map<Patient>(patientDto, opts => opts.Items["Photo"] = photoPath); // Assuming the mapper is configured properly to handle Patient mapping
+                //patient.Photo = photoPath;
+                applicationUser = patient;
             }
+
+            if (applicationUser == null)
+            {
+                throw new InvalidOperationException("The user type is not recognized for mapping.");
+            }
+
+            return applicationUser;
         }
 
         private async Task<bool> AssignRoleAsync(ApplicationUser user, string role)
@@ -243,10 +170,27 @@ namespace Vezeeta.Sevices.Services
 
         private static string GetRoleForUserType<T>() where T : AccountModelDto
         {
-            return typeof(T) == typeof(DoctorModelDto) ? "Doctor" : "Patient";
+            return typeof(T) == typeof(CreateDoctorModelDto) ? "Doctor" : "Patient";
         }
+        private async Task<string> SavePhotoAsync(IFormFile photo)
+        {
+            if (photo != null)
+            {
+                string uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images");
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await photo.CopyToAsync(fileStream);
+                }
+
+                return uniqueFileName;
+            }
+
+            return null; // Return null if photo is not provided (optional for patients)
+        }
+
     }
-
-
 
 }

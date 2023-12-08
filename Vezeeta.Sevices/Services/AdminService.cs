@@ -56,35 +56,8 @@ namespace Vezeeta.Service.Services
 
         }
 
-        public async Task<Doctor> AddDoctor(DoctorModelDto model)
-        {
-            Specialization specialization =
-                await _unitOfWork
-                .Specializations
-                .Find(e => e.Name == model.Specialization);
-            if (specialization == null) return null;
-            Doctor doctor = new Doctor()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                NormalizedUserName = model.FirstName + " " + model.LastName,
-                Gender = model.Gender,
-                DateOfBirth = model.DateOfBirth,
-                PhoneNumber = model.PhoneNumber,
-                Photo = "Doctor",
-                Specialization = specialization
-            };
-            string password = HelperFunctions.GenerateRandomPassword();
 
-            //await _unitOfWork.Users.AddAsync(doctor);
-
-            return doctor;
-        }
-
-
-        public async Task<Doctor> EditDoctor(string id, DoctorModelDto newDoctorInfo)
+        public async Task<Doctor> EditDoctor(string id, CreateDoctorModelDto newDoctorInfo)
         {
             Doctor doctor = await _unitOfWork.Doctors.GetByIdAsync(id);
             doctor.FirstName = newDoctorInfo.FirstName;

@@ -109,7 +109,7 @@ namespace Vezeeta.Api.Controllers
    
       //  -------------------------------------------------------------------------------------------------------------------------------- //
         [HttpPut("Doctor/Edit")]
-        public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] DoctorModelDto newDoctorInfo)
+        public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] CreateDoctorModelDto newDoctorInfo)
         {
             if (ModelState.IsValid && !id.IsNullOrEmpty())
             {

@@ -83,9 +83,18 @@ namespace Vezeeta.Repository.Repositories
             return await queryable.Where(predicate).Skip(skip).Take(take).ToListAsync();
         }
 
-        public async Task< IQueryable<T>> GetData(int pageNumber, int PageSize)
+        public async Task< IQueryable<T>> GetData(int pageNumber, int pageSize)
         {
-            return _entities.Skip((pageNumber - 1) * PageSize).Take(PageSize);
+            if (pageNumber <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number should be greater than 0.");
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size should be greater than 0.");
+            }
+            return _entities.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
             //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
     }
