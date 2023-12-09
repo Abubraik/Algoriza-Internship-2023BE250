@@ -16,8 +16,11 @@ namespace Vezeeta.Sevices.Models.DTOs
         public string Specialize { get; set; }
         public decimal Price { get; set; }
         public string Gender { get; set; }
-        public List<AppointmentInfoDto> Appointments { get; set; }
-
+        public List<AppointmentInfoDto>? Appointments { get; set; }
+        public DoctorInfoDto()
+        {
+            
+        }
         public DoctorInfoDto(Doctor doctor)
         {
             Image = doctor.Photo;

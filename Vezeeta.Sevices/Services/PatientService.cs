@@ -20,7 +20,6 @@ namespace Vezeeta.Sevices.Services
         }
 
         public async Task<List<DoctorInfoDto>> SearchForDoctors(int pageNumber, int pageSize, string search)
-
         {
             pageNumber = Math.Max(pageNumber, 1);
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vezeeta.Core.Models;
+﻿using System.ComponentModel.DataAnnotations;
 using Vezeeta.Service.Services;
 using static Vezeeta.Core.Enums.Enums;
 
@@ -26,6 +20,6 @@ namespace Vezeeta.Sevices.Models.DTOs
         [Required]
         [ValidEnumValue]
         public DateOnly DateOfBirth { get; set; }
-        public List<BookingsInfoDto> Bookings { get; set; }
+        public List<BookingsInfoDto>? Bookings { get; set; }
     }
 }

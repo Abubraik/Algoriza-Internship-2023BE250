@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,6 +15,7 @@ namespace Vezeeta.Core.Repositories
         Task<T> Find(Expression<Func<T, bool>> predicate, string[] includes = null);
         IQueryable<T> FindAll(Expression<Func<T, bool>> predicate, string[] includes = null);
         IQueryable<T> FindAll(Expression<Func<T, bool>> predicate, int pageNumber, int pageSize, string[] includes = null);
+        EntityEntry Explicit(T entity);
         Task AddAsync(T entity);
         //Task AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);

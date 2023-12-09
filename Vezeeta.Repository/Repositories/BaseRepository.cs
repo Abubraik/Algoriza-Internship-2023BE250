@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 using Vezeeta.Core.Repositories;
 
@@ -83,7 +84,10 @@ namespace Vezeeta.Repository.Repositories
 
             return queryable.Where(predicate).Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
-
+        public EntityEntry Explicit(T entity)
+        {
+            return _context.Entry(entity);
+        }
         private async Task<IEnumerable<T>> GetData(int pageNumber, int pageSize,IEnumerable<T> entity)
         {
             if (pageNumber <= 0)

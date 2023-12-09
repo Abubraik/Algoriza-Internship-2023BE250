@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
-using Vezeeta.Sevices.Helpers;
-using static Vezeeta.Core.Enums.Enums;
 using Vezeeta.Services.Models.DTOs;
+using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
+using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Service.Services
 {
@@ -30,29 +28,63 @@ namespace Vezeeta.Service.Services
         //need to switch numberOfDoctors with numofrequests or bookings.
         public async Task<List<SpecializationDTO>> Top5Specializations()
         {
-            //var top5specializations =await _context.specializations.orderbydescending(e=>e.doctors.count()).tolistasync();
-            IQueryable<SpecializationDTO> top5specializations = _unitOfWork.Doctors.GetAll()
-                .GroupBy(e => e.Specialization)
-                .OrderByDescending(e => e.Count())
+            var topSpecializations = await _unitOfWork.Specializations.GetAll()
+                .Select(s => new
+                {
+                    SpecializationName = s.Name,
+                    RequestCount = s.Doctors
+                        .SelectMany(d => d.Bookings)
+                        .Count(r=>r.Status == Status.Completed)
+                })
+                .OrderByDescending(x => x.RequestCount)
                 .Take(5)
-                .Select(e => new SpecializationDTO { SpecializationName = e.Key.Name, NumberOfDoctors = e.Count() });
-            return await top5specializations.ToListAsync();
+                .ToListAsync();
+            return topSpecializations.Select(x => new SpecializationDTO
+            {
+                SpecializationName = x.SpecializationName,
+                RequestCount = x.RequestCount
+            }).ToList();
+
         }
 
         //need to make is sort by name if requests is equal.
         public async Task<List<DoctorTop10Dto>> Top10Doctors()
         {
-            var top5doctors = await _unitOfWork.Users.GetAll().OfType<Doctor>()
-                .OrderByDescending(e => e.Bookings.Count(b => b.Status == Status.Completed))
-                .Take(10).Select(e => new DoctorTop10Dto { Image = e.Photo, FullName = e.NormalizedUserName, Specialization = e.Specialization.Name, NumberOfrequests = e.Bookings.Count() })
+            var top5doctors =await  _unitOfWork.Users.GetAll().OfType<Doctor>()
+                .OrderByDescending(e => e.Bookings.Count())
+                .Take(10)
+                .Select(e => new DoctorTop10Dto { Image = e.Photo
+                , FullName = e.NormalizedUserName
+                , Specialization = e.Specialization.Name
+                , NumberOfrequests = e.Bookings.Count(b => b.Status == Status.Completed) })
                 .ToListAsync();
             return top5doctors;
         }
 
-        public async Task<Doctor> GetDoctorById(string id)
+        public async Task<List<object>> GetTotalRequests()
+        {
+            var totalRequests = await _unitOfWork.Bookings.GetAll().CountAsync();
+            var totalCompletedRequests = await _unitOfWork.Bookings.GetAll().CountAsync(b => b.Status == Status.Completed);
+            var totalPendingRequests = await _unitOfWork.Bookings.GetAll().CountAsync(b => b.Status == Status.Pending);
+            var totalCancelledRequests = await _unitOfWork.Bookings.GetAll().CountAsync(b => b.Status == Status.Canceled);
+            return new List<object> { new  { Total_Requests = totalRequests, Total_Completed_Requests = totalCompletedRequests
+                ,Total_Pending_Requests = totalPendingRequests ,Total_Cancelled_Requests =totalCancelledRequests} };
+        }
+
+        public async Task<object> GetDoctorById(string id)
         {
             Doctor doctor = await _unitOfWork.Doctors.GetByIdAsync(id);
-            return doctor;
+            _unitOfWork.Doctors.Explicit(doctor).Reference("Specialization").Load();
+            return new
+            {
+                image = doctor.Photo,
+                fullName = $"{doctor.FirstName} {doctor.LastName}",
+                email = doctor.Email,
+                phoneNumber = doctor.PhoneNumber,
+                specialization = doctor.Specialization.Name,
+                gender = doctor.Gender,
+                dateOfBirth = doctor.DateOfBirth,
+            }; ;
 
         }
 
@@ -85,35 +117,63 @@ namespace Vezeeta.Service.Services
             }
             return false;
         }
+
+
         //notfinished
-        //public async Task<Patient> GetPatientById(string id)
-        //{
-        //    Patient patient = await _unitOfWork.Patients.GetByIdAsync(id);
-        //    PatientModelDto patientModel = new PatientModelDto()
-        //    {
-        //        Image = patient.Photo,
-        //        FullName = $"{patient.FirstName + patient.LastName}",
-        //        Email = patient.Email,
-        //        PhoneNumber = patient.PhoneNumber,
-        //        Gender = patient.Gender,
-        //        DateOfBirth = patient.DateOfBirth,
-        //        Bookings = patient.Bookings.Select(e => new BookingsInfoDto
-        //        {
-        //            Image = e.Doctor.Photo,
-        //            DoctorName = $"{e.Doctor.FirstName + e.Doctor.LastName}",
-        //            Specialization = e.Doctor.Specialization.Name,
+        public async Task<PatientModelDto> GetPatientById(string id)
+        {
+            var patient = await _unitOfWork.Patients.FindAll(p=>p.Id == id)
+                .Include(e=>e.Bookings)
+                .ThenInclude(e => e.Doctor)
+                .ThenInclude(e=>e.Appointments)
+                .ThenInclude(e=>e.DaySchedules)
+                .ThenInclude(e => e.TimeSlots)
+                .FirstOrDefaultAsync();
+            PatientModelDto patientModel = new PatientModelDto()
+            {
+                Image = patient.Photo,
+                FullName = $"{patient.FirstName + patient.LastName}",
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber,
+                Gender = patient.Gender,
+                DateOfBirth = patient.DateOfBirth,
+                Bookings = patient.Bookings.Select(e => new BookingsInfoDto(new DoctorInfoDto(e.Doctor), e))
+                .ToList(),
+            };
 
-        //        })
-        //        .ToList(),
-        //    };
+            return patientModel;
+        }
 
-        //    return patient;
-        //}
+        public async Task<List<PatientModelDto>> GetAllPatients(int pageNumber, int pageSize, string search)
+        {
+            pageNumber = Math.Max(pageNumber, 1);
+            var patientQuery = _unitOfWork.Patients.FindAll(p => p.FirstName.Contains(search)
+            || p.LastName.Contains(search)
+            || p.Email.Contains(search)
+            || p.PhoneNumber.Contains(search)
+            , pageNumber
+            , pageSize);
+            var patientList = await patientQuery.Select(p => _mapper.Map<PatientModelDto>(p)).ToListAsync();
+            return patientList;
+        }
+          public async Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search)
+        {
+            pageNumber = Math.Max(pageNumber, 1);
+            var patientQuery = _unitOfWork.Doctors.FindAll(p => p.FirstName.Contains(search)
+            || p.LastName.Contains(search)
+            || p.Email.Contains(search)
+            || p.PhoneNumber.Contains(search)
+            , pageNumber
+            , pageSize);
+            //EDIT FOR BIRTHDATE
+            var patientList = await patientQuery.Select(p => _mapper.Map<DoctorInfoDto>(p)).ToListAsync();
+            return patientList;
+        }
         public async Task<bool> AddDiscountCode(DiscountCodeDto newDiscountCode)
         {
             DiscountCode isCodeRegistered = await _unitOfWork.DiscountCodes
                 .Find(e => e.Code == newDiscountCode.Code);
-            if(isCodeRegistered != null) return false;
+            if (isCodeRegistered != null) return false;
             DiscountCode discountCode = _mapper.Map<DiscountCode>(newDiscountCode);
             await _unitOfWork.DiscountCodes.AddAsync(discountCode);
             await _unitOfWork.Complete();
@@ -122,7 +182,7 @@ namespace Vezeeta.Service.Services
 
         public async Task<bool> UpdateDiscountCode(int discoundId, DiscountCodeDto updatedDiscountCode)
         {
-            DiscountCode discountCode = await _unitOfWork.DiscountCodes.Find(e=>e.DiscountCodeId == discoundId); //get Discount entity
+            DiscountCode discountCode = await _unitOfWork.DiscountCodes.Find(e => e.DiscountCodeId == discoundId); //get Discount entity
             if (discountCode == null) return false;
             var isApplied = await _unitOfWork.Bookings.Find(e => e.DiscountCodeId == discountCode.DiscountCodeId);
             if (isApplied != null) return false;

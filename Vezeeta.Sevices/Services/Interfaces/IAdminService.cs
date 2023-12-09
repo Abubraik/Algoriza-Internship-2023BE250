@@ -11,15 +11,18 @@ namespace Vezeeta.Sevices.Services.Interfaces
 
         Task<int> NumOfDoctors();
         Task<int> NumOfPatients();
-        //Task<> NumOfPatients();
+        Task<List<object>> GetTotalRequests();
         Task<List<SpecializationDTO>> Top5Specializations();
         Task<List<DoctorTop10Dto>> Top10Doctors();
-
         //Doctors
-        Task<Doctor> GetDoctorById(string id);
+        Task<object> GetDoctorById(string id);
         Task<Doctor> EditDoctor(string id, CreateDoctorModelDto doctor);
         Task<bool> DeleteDoctor(string id);
 
+
+        Task<PatientModelDto> GetPatientById(string id);
+        Task<List<PatientModelDto>> GetAllPatients(int pageNumber, int pageSize, string search);
+        Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search);
         //Settings
         Task<bool> AddDiscountCode(DiscountCodeDto discountCode);
         Task<bool> UpdateDiscountCode(int discoundId, DiscountCodeDto updatedDiscountCode);

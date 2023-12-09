@@ -7,7 +7,6 @@ using Vezeeta.Core.Repositories;
 using Vezeeta.Repository;
 using static Vezeeta.Core.Enums.Enums;
 using Vezeeta.Sevices.Services.Interfaces;
-using Vezeeta.Sevices.Models;
 
 public class DoctorService : IDoctorService
 {

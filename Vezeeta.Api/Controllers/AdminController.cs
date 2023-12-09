@@ -44,6 +44,11 @@ namespace Vezeeta.Api.Controllers
             return Ok(await adminService.NumOfPatients());
         }
 
+        [HttpGet("NumOfRequests")]
+        public async Task<IActionResult> NumOfRequests()
+        {
+            return Ok(await adminService.GetTotalRequests());
+        }
         [HttpGet("Top5Specializations")]
         public async Task<IActionResult> Top5Specializations()
         {
@@ -52,7 +57,8 @@ namespace Vezeeta.Api.Controllers
         [HttpGet("Top10Doctors")]
         public async Task<IActionResult> Top10Doctors()
         {
-            return Ok(await adminService.Top10Doctors());
+            var result = await adminService.Top10Doctors();
+            return Ok(result);
         }
 
 
@@ -91,19 +97,9 @@ namespace Vezeeta.Api.Controllers
         [HttpGet("Doctor/GetById")]
         public async Task<IActionResult> GetDoctorById([FromQuery] string id)
         {
-            Doctor doctor = await adminService.GetDoctorById(id);
+            var doctor = await adminService.GetDoctorById(id);
             if (doctor == null) return NotFound("No Doctor with this ID");
-            var model = new
-            {
-                image = doctor.Photo,
-                fullName = $"{doctor.FirstName} {doctor.LastName}",
-                email = doctor.Email,
-                phoneNumber = doctor.PhoneNumber,
-                specialization = doctor.Specialization.Name,
-                gender = doctor.Gender,
-                dateOfBirth = doctor.DateOfBirth,
-            };
-            return Ok(model);
+            return Ok(doctor);
         }
 
    
@@ -130,7 +126,24 @@ namespace Vezeeta.Api.Controllers
             }
             return NotFound();
         }
+        [HttpGet("SearchForDoctors")]
+        public async Task<IActionResult> GetAllDoctors(int pageNumber, int pageSize, string search)
+        {
+            return Ok(await adminService.GetAllDoctors(pageNumber, pageSize, search));
+        }
+        //--------------------------------------------------------------Patients------------------------------------------//
+        [HttpGet("GetPatient")]
+        public async Task<IActionResult> GetPatient([FromQuery] string id) 
+        { return Ok(await adminService.GetPatientById(id)); }
 
+        [HttpGet("SearchForPatients")]
+        public async Task<IActionResult> GetAllPatients(int pageNumber, int pageSize, string search) 
+        {
+            return Ok(await adminService.GetAllPatients(pageNumber,pageSize,search)); 
+        }
+
+
+        //-------------------------------------------------------------------------------Discount Codes------------------------------------------//
         [HttpPost("AddDiscountCode")]
         public async Task<IActionResult> AddDiscountCode([FromBody] DiscountCodeDto discountCode) { 
         
@@ -184,9 +197,4 @@ namespace Vezeeta.Api.Controllers
         }
     }
 
-    //public static List<T> GetDate(int pageNumber,int PageSize) 
-    //{
-
-    //    retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
-    //}
 }
