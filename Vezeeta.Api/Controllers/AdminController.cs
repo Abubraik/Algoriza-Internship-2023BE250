@@ -37,11 +37,13 @@ namespace Vezeeta.Api.Controllers
         {
             return Ok(await adminService.GetTotalRequests());
         }
+
         [HttpGet("Top5Specializations")]
         public async Task<IActionResult> Top5Specializations()
         {
             return Ok(await adminService.Top5Specializations());
         }
+
         [HttpGet("Top10Doctors")]
         public async Task<IActionResult> Top10Doctors()
         {
@@ -50,38 +52,7 @@ namespace Vezeeta.Api.Controllers
         }
 
 
-        //[HttpPost("registerAdmin")]
-        //public async Task<IActionResult> RegisterAdmin([FromBody] AccountModelDto model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = new ApplicationUser
-        //        {
-        //            UserName = model.Email,
-        //            Email = model.Email,
-        //            FirstName = model.FirstName,
-        //            LastName = model.LastName,
-        //            NormalizedUserName = model.FirstName + " " + model.LastName,
-        //            Gender = model.Gender,
-        //            DateOfBirth = model.DateOfBirth,
-        //            PhoneNumber = model.PhoneNumber,
-        //        };
-        //        string password = HelperFunctions.GenerateRandomPassword();
-        //        var result = await userManager.CreateAsync(user, password);
-        //        if (result.Succeeded)
-        //        {
-        //            await userManager.AddToRoleAsync(user, "Admin");
-        //            await signInManager.SignInAsync(user, isPersistent: false);
-
-        //            return StatusCode(201, "Account created successfully with password " + password);
-        //        }
-        //        else return BadRequest(result);
-
-
-        //    }
-        //    return BadRequest(ModelState);
-        //}
-
+        //  -------------------------------------------------------------------------------------------------------------------------------- //
         [HttpGet("Doctor/GetById")]
         public async Task<IActionResult> GetDoctorById([FromQuery] string id)
         {
@@ -90,8 +61,12 @@ namespace Vezeeta.Api.Controllers
             return Ok(doctor);
         }
 
-   
-      //  -------------------------------------------------------------------------------------------------------------------------------- //
+        [HttpGet("SearchForDoctors")]
+        public async Task<IActionResult> GetAllDoctors(PaginatedSearchModel paginatedSearch)
+        {
+            return Ok(await adminService.GetAllDoctors(paginatedSearch));
+        }
+
         [HttpPut("Doctor/Edit")]
         public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] CreateDoctorModelDto newDoctorInfo)
         {
@@ -114,20 +89,16 @@ namespace Vezeeta.Api.Controllers
             }
             return NotFound();
         }
-        [HttpGet("SearchForDoctors")]
-        public async Task<IActionResult> GetAllDoctors(int pageNumber, int pageSize, string search)
-        {
-            return Ok(await adminService.GetAllDoctors(pageNumber, pageSize, search));
-        }
+
         //--------------------------------------------------------------Patients------------------------------------------//
         [HttpGet("GetPatient")]
         public async Task<IActionResult> GetPatient([FromQuery] string id) 
         { return Ok(await adminService.GetPatientById(id)); }
 
         [HttpGet("SearchForPatients")]
-        public async Task<IActionResult> GetAllPatients(int pageNumber, int pageSize, string search) 
+        public async Task<IActionResult> GetAllPatients(PaginatedSearchModel paginatedSearch) 
         {
-            return Ok(await adminService.GetAllPatients(pageNumber,pageSize,search)); 
+            return Ok(await adminService.GetAllPatients(paginatedSearch)); 
         }
 
 
@@ -183,6 +154,42 @@ namespace Vezeeta.Api.Controllers
             }
             return BadRequest(ModelState);
         }
+
+        #region AdminRegiste
+
+        //[HttpPost("registerAdmin")]
+        //public async Task<IActionResult> RegisterAdmin([FromBody] AccountModelDto model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = new ApplicationUser
+        //        {
+        //            UserName = model.Email,
+        //            Email = model.Email,
+        //            FirstName = model.FirstName,
+        //            LastName = model.LastName,
+        //            NormalizedUserName = model.FirstName + " " + model.LastName,
+        //            Gender = model.Gender,
+        //            DateOfBirth = model.DateOfBirth,
+        //            PhoneNumber = model.PhoneNumber,
+        //        };
+        //        string password = HelperFunctions.GenerateRandomPassword();
+        //        var result = await userManager.CreateAsync(user, password);
+        //        if (result.Succeeded)
+        //        {
+        //            await userManager.AddToRoleAsync(user, "Admin");
+        //            await signInManager.SignInAsync(user, isPersistent: false);
+
+        //            return StatusCode(201, "Account created successfully with password " + password);
+        //        }
+        //        else return BadRequest(result);
+
+
+        //    }
+        //    return BadRequest(ModelState);
+        //}
+
+        #endregion
     }
 
 }

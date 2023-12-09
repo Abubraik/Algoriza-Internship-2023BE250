@@ -196,9 +196,9 @@ public class DoctorService : IDoctorService
         return (IsSuccess: true, Message: "TimeSlot Deleted..!");
     }
 
-    public async Task<List<PatientModelDto>> GetAllPatientsAsync(ClaimsPrincipal user,Days day,int pageNumber, int pageSize, string search)
+    public async Task<List<PatientModelDto>> GetAllPatientsAsync(ClaimsPrincipal user,Days day,PaginatedSearchModel paginatedSearch)
     {
-        pageNumber = Math.Max(pageNumber, 1);
+        paginatedSearch.pageNumber = Math.Max(paginatedSearch.pageNumber, 1);
         var doctor = await _unitOfWork.Doctors.Find(e => e.Email == user.Identity!.Name);
         var bookings = _unitOfWork.Bookings.FindAll(e => e.DoctorId == doctor.Id
         && e.Doctor.Appointments.DaySchedules.Where(d => d.TimeSlots.Any(t => t.StartTime == e.TimeSlot.StartTime)).FirstOrDefault().DayOfWeek == day
@@ -206,14 +206,14 @@ public class DoctorService : IDoctorService
             .Include(d => d.Patient);
         //need to make is sort by name if requests is equal.
         var patientList = bookings
-            .Where(b=>b.Patient.FirstName.Contains(search)
-            || b.Patient.LastName.Contains(search)
-            || b.Patient.Email.Contains(search)
-            || b.Patient.PhoneNumber.Contains(search))
+            .Where(b=>b.Patient.FirstName.Contains(paginatedSearch.search)
+            || b.Patient.LastName.Contains(paginatedSearch.search)
+            || b.Patient.Email.Contains(paginatedSearch.search)
+            || b.Patient.PhoneNumber.Contains(paginatedSearch.search))
             .Select(b => _mapper.Map<PatientModelDto>(b.Patient));
         var result = await patientList
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((paginatedSearch.pageNumber - 1) * paginatedSearch.pageSize)
+            .Take(paginatedSearch.pageSize)
             .ToListAsync();
         //var patientList = await patientQuery.Select(p => _mapper.Map<PatientModelDto>(p)).ToListAsync();
         return result;

@@ -42,9 +42,9 @@ namespace Vezeeta.Api.Controllers
         }
 
         [HttpGet("GetAllPatients")]
-        public async Task<List<PatientModelDto>> GetAllPatientsAsync([FromQuery]Days day, [FromQuery]int pageSize, [FromQuery] int pageNumber, [FromQuery]string search)
+        public async Task<List<PatientModelDto>> GetAllPatientsAsync([FromQuery]Days day, [FromQuery] PaginatedSearchModel paginatedSearch)
         {
-            return await _doctorService.GetAllPatientsAsync(User,day,pageSize,pageNumber,search);
+            return await _doctorService.GetAllPatientsAsync(User,day, paginatedSearch);
         }
 
         [HttpPut("ConfirmCheckup")]

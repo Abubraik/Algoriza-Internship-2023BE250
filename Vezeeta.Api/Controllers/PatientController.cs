@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
 
 namespace Vezeeta.Api.Controllers
@@ -17,9 +18,9 @@ namespace Vezeeta.Api.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<IActionResult> Search([FromQuery] int pageNumber, [FromQuery] int pageSize, [FromQuery] string search)
+        public async Task<IActionResult> Search([FromQuery] PaginatedSearchModel paginatedSearch)
         {
-            var result = await _patientService.SearchForDoctors(pageNumber, pageSize, search);
+            var result = await _patientService.SearchForDoctors(paginatedSearch);
             return Ok(result);
         }
         [HttpGet("GetAllBookings")]

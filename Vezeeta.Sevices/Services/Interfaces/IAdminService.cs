@@ -19,8 +19,8 @@ namespace Vezeeta.Sevices.Services.Interfaces
 
 
         Task<PatientModelDto> GetPatientById(string id);
-        Task<List<PatientModelDto>> GetAllPatients(int pageNumber, int pageSize, string search);
-        Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search);
+        Task<List<PatientModelDto>> GetAllPatients(PaginatedSearchModel paginatedSearch);
+        Task<List<DoctorInfoDto>> GetAllDoctors(PaginatedSearchModel paginatedSearch);
         //Settings
         Task<bool> AddDiscountCode(DiscountCodeDto discountCode);
         Task<bool> UpdateDiscountCode(int discoundId, DiscountCodeDto updatedDiscountCode);

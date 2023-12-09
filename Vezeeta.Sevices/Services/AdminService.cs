@@ -25,7 +25,6 @@ namespace Vezeeta.Service.Services
 
         public async Task<int> NumOfPatients() => await _unitOfWork.Users.GetAll().OfType<Patient>().CountAsync();
 
-        //need to switch numberOfDoctors with numofrequests or bookings.
         public async Task<List<SpecializationDTO>> Top5Specializations()
         {
             var topSpecializations = await _unitOfWork.Specializations.GetAll()
@@ -47,7 +46,6 @@ namespace Vezeeta.Service.Services
 
         }
 
-        //need to make is sort by name if requests is equal.
         public async Task<List<DoctorTop10Dto>> Top10Doctors()
         {
             var top5doctors = await _unitOfWork.Users.GetAll().OfType<Doctor>()
@@ -87,7 +85,7 @@ namespace Vezeeta.Service.Services
                 fullName = $"{doctor.FirstName} {doctor.LastName}",
                 email = doctor.Email,
                 phoneNumber = doctor.PhoneNumber,
-                specialization = doctor.Specialization.Name,
+                specialization = doctor.Specialization!.Name,
                 gender = doctor.Gender,
                 dateOfBirth = doctor.DateOfBirth,
             }; ;
@@ -150,27 +148,27 @@ namespace Vezeeta.Service.Services
             return patientModel;
         }
 
-        public async Task<List<PatientModelDto>> GetAllPatients(int pageNumber, int pageSize, string search)
+        public async Task<List<PatientModelDto>> GetAllPatients(PaginatedSearchModel paginatedSearch)
         {
-            pageNumber = Math.Max(pageNumber, 1);
-            var patientQuery = _unitOfWork.Patients.FindAll(p => p.FirstName.Contains(search)
-            || p.LastName.Contains(search)
-            || p.Email.Contains(search)
-            || p.PhoneNumber.Contains(search)
-            , pageNumber
-            , pageSize);
+            paginatedSearch.pageNumber = Math.Max(paginatedSearch.pageNumber, 1);
+            var patientQuery = _unitOfWork.Patients.FindAll(p => p.FirstName.Contains(paginatedSearch.search)
+            || p.LastName.Contains(paginatedSearch.search)
+            || p.Email.Contains(paginatedSearch.search)
+            || p.PhoneNumber.Contains(paginatedSearch.search)
+            , paginatedSearch.pageNumber
+            , paginatedSearch.pageSize);
             var patientList = await patientQuery.Select(p => _mapper.Map<PatientModelDto>(p)).ToListAsync();
             return patientList;
         }
-        public async Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search)
+        public async Task<List<DoctorInfoDto>> GetAllDoctors(PaginatedSearchModel paginatedSearch)
         {
-            pageNumber = Math.Max(pageNumber, 1);
-            var patientQuery = _unitOfWork.Doctors.FindAll(p => p.FirstName.Contains(search)
-            || p.LastName.Contains(search)
-            || p.Email.Contains(search)
-            || p.PhoneNumber.Contains(search)
-            , pageNumber
-            , pageSize);
+            paginatedSearch.pageNumber = Math.Max(paginatedSearch.pageNumber, 1);
+            var patientQuery = _unitOfWork.Doctors.FindAll(p => p.FirstName.Contains(paginatedSearch.search)
+            || p.LastName.Contains(paginatedSearch.search)
+            || p.Email.Contains(paginatedSearch.search)
+            || p.PhoneNumber.Contains(paginatedSearch.search)
+            , paginatedSearch.pageNumber
+            , paginatedSearch.pageSize);
             //EDIT FOR BIRTHDATE
             var patientList = await patientQuery.Select(p => _mapper.Map<DoctorInfoDto>(p)).ToListAsync();
             return patientList;

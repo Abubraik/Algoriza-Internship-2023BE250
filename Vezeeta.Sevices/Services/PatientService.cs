@@ -18,16 +18,16 @@ namespace Vezeeta.Sevices.Services
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<List<DoctorInfoDto>> SearchForDoctors(int pageNumber, int pageSize, string search)
+        public async Task<List<DoctorInfoDto>> SearchForDoctors(PaginatedSearchModel paginatedSearch)
         {
-            pageNumber = Math.Max(pageNumber, 1);
+            paginatedSearch.pageNumber = Math.Max(paginatedSearch.pageNumber, 1);
 
-            var doctorsQuery = _unitOfWork.Doctors.FindAll(d => d.FirstName.Contains(search)
-            || d.LastName.Contains(search)
-            || d.Email.Contains(search)
-            || d.PhoneNumber.Contains(search)
-            , pageNumber
-            , pageSize)
+            var doctorsQuery = _unitOfWork.Doctors.FindAll(d => d.FirstName.Contains(paginatedSearch.search)
+            || d.LastName.Contains(paginatedSearch.search)
+            || d.Email.Contains(paginatedSearch.search)
+            || d.PhoneNumber.Contains(paginatedSearch.search)
+            , paginatedSearch.pageNumber
+            , paginatedSearch.pageSize)
                 .Include(d => d.Appointments)
                 .ThenInclude(a => a.DaySchedules)
             .ThenInclude(ds => ds.TimeSlots);
