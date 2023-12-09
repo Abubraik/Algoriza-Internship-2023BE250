@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Vezeeta.Service.Services
+namespace Vezeeta.Sevices.Helpers
 
 {
     public class ValidEnumValueAttribute : ValidationAttribute

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
+using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Api.Controllers
 {
@@ -38,6 +39,20 @@ namespace Vezeeta.Api.Controllers
         public async Task<bool> DeletAppointmentAsync(int timeId)
         {
             return (await _doctorService.DeleteAppointmentAsync(timeId,User.Identity!.Name!)).IsSuccess? true : false;
+        }
+
+        [HttpGet("GetAllPatients")]
+        public async Task<List<PatientModelDto>> GetAllPatientsAsync([FromQuery]Days day, [FromQuery]int pageSize, [FromQuery] int pageNumber, [FromQuery]string search)
+        {
+            return await _doctorService.GetAllPatientsAsync(User,day,pageSize,pageNumber,search);
+        }
+
+        [HttpPut("ConfirmCheckup")]
+        public async Task<IActionResult> ConfirmCheckup(int bookingId)
+        {
+            var result = await _doctorService.ConfirmCheckupAsync(bookingId);
+            if (!result.isSuccess) return BadRequest(result.Message);
+            return Ok(result.Message);
         }
     }
 }

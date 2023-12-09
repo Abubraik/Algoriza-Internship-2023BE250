@@ -12,12 +12,7 @@ namespace Vezeeta.Core.Repositories
         IQueryable<T> FindAll(Expression<Func<T, bool>> predicate, int pageNumber, int pageSize, string[] includes = null);
         EntityEntry Explicit(T entity);
         Task AddAsync(T entity);
-        //Task AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);
         void Remove(T entity);
-        //public Task<IQueryable<T>> GetData(int pageNumber, int PageSize);
-        //Task<IEnumerable<T>> GetData(int pageNumber, int pageSize, IEnumerable<T> entity);
-        //void RemoveRange(IEnumerable<T> entities);
-
     }
 }

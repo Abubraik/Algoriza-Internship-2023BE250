@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
@@ -13,14 +15,16 @@ public class DoctorService : IDoctorService
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<Doctor> _userManager;
     private readonly ApplicationDbContext _context;
-    public DoctorService(IUnitOfWork unitOfWork, UserManager<Doctor> userManager, ApplicationDbContext context)
+    private readonly IMapper _mapper;
+
+    public DoctorService(IUnitOfWork unitOfWork, UserManager<Doctor> userManager, ApplicationDbContext context, IMapper mapper)
     {
         this._unitOfWork = unitOfWork;
         this._userManager = userManager;
         this._context = context;
+        this._mapper = mapper;
     }
-    //TimeOnly.ParseExact("5:00 pm", "h:mm tt", CultureInfo.InvariantCulture);
-
+    //update context!!
     public async Task<(bool IsSuccess, string Message)> AddAppointmentAsync(AddAppointmentDto appointmentDto, string doctorName)
     {
 
@@ -42,7 +46,7 @@ public class DoctorService : IDoctorService
             };
 
             await _unitOfWork.Appointments.AddAsync(appointment);
-            //await _unitOfWork.Complete();
+
         }
         // Update or add day schedules and time slots
         foreach (var dsDto in appointmentDto.DaySchedules)
@@ -84,16 +88,11 @@ public class DoctorService : IDoctorService
 
 
 
-        // Save all the changes to the database in one go
         await _unitOfWork.Complete();
 
         return (IsSuccess: true, Message: "Added Successfully..!");
     }
 
-
-
-
-    //public async Task<Appointmetn> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName)
     public async Task<(bool IsSuccess, string Message)> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName)
     {
         #region CommentedCode
@@ -172,7 +171,7 @@ public class DoctorService : IDoctorService
         timeSlotToUpdate.EndTime = newEndTime;
         return (IsSuccess: true, Message: "TimeSlot updated Successfully..!");
     }
-    //public async Task<bool> DeleteAppointmentAsync(int timeId, string doctorName)
+
     public async Task<(bool IsSuccess, string Message)> DeleteAppointmentAsync(int timeId, string doctorName)
 
     {
@@ -195,5 +194,40 @@ public class DoctorService : IDoctorService
         _unitOfWork.TimeSlots.Remove(timeSlot);
         await _unitOfWork.Complete();
         return (IsSuccess: true, Message: "TimeSlot Deleted..!");
+    }
+
+    public async Task<List<PatientModelDto>> GetAllPatientsAsync(ClaimsPrincipal user,Days day,int pageNumber, int pageSize, string search)
+    {
+        pageNumber = Math.Max(pageNumber, 1);
+        var doctor = await _unitOfWork.Doctors.Find(e => e.Email == user.Identity!.Name);
+        var bookings = _unitOfWork.Bookings.FindAll(e => e.DoctorId == doctor.Id
+        && e.Doctor.Appointments.DaySchedules.Where(d => d.TimeSlots.Any(t => t.StartTime == e.TimeSlot.StartTime)).FirstOrDefault().DayOfWeek == day
+        && (e.Status == Status.Pending || e.Status == Status.Completed))
+            .Include(d => d.Patient);
+        //need to make is sort by name if requests is equal.
+        var patientList = bookings
+            .Where(b=>b.Patient.FirstName.Contains(search)
+            || b.Patient.LastName.Contains(search)
+            || b.Patient.Email.Contains(search)
+            || b.Patient.PhoneNumber.Contains(search))
+            .Select(b => _mapper.Map<PatientModelDto>(b.Patient));
+        var result = await patientList
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        //var patientList = await patientQuery.Select(p => _mapper.Map<PatientModelDto>(p)).ToListAsync();
+        return result;
+    }
+
+    public async Task<(bool isSuccess,string Message)> ConfirmCheckupAsync(int bookingId)
+    {
+        var booking = await _unitOfWork.Bookings.Find(b=>b.BookingId == bookingId);
+        if(booking.Status == Status.Completed)
+            return(false, "Already Confirmed..!");
+        else if(booking.Status == Status.Canceled)
+            return (false, "Already Canceled..!");
+        booking.Status = Status.Completed;
+        await _unitOfWork.Complete();
+        return (true, "Confirmed Successfully..!");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Vezeeta.Service.Services;
+using Vezeeta.Sevices.Helpers;
 using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Services.Models.DTOs
