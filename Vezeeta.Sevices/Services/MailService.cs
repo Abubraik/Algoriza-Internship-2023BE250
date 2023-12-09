@@ -24,8 +24,8 @@ namespace Vezeeta.Sevices.Services
         //    var emailMessage = CreateEmailMessage(message);
         //    Send(emailMessage);
         //}
-        void IMailService.SendEmail(string type, string username,
-            string password, string token, string link)
+        void IMailService.SendEmail(string type, string? username="",
+            string? password="", string? token="", string? link="")
         {
             Message message = new Message(new string[] { username },
                 $"Vezeeta {type}",
@@ -66,7 +66,7 @@ namespace Vezeeta.Sevices.Services
             }
         }
 
-        private string MessageContent(string type, string username, string password, string token, string? link = "")
+        private string MessageContent(string type, string username, string? password, string? token, string? link = "")
         {
             var content = "";
             if (type == "Confirmation")
@@ -75,6 +75,13 @@ namespace Vezeeta.Sevices.Services
                 $@"<h2>Your UserName: {username}</h2><br>
             <h2>Your Password: {password}</h2><br>
             <h3>Please use this <a href=""{link}"">Link</a> to confirm your email</h3>";
+            }else if(type == "BookingConfirmation")
+            {
+                content = $@"<h3>Your Booking Number {password} has been successfully booked</h3>
+<h4> ThankYou for trusting Vezeeta.";
+            }else if(type == "BookinCancelation")
+            {
+                content = $"<h3>Your Booking Number {password} has been cancelled</h3>";
             }
             return content; 
         }

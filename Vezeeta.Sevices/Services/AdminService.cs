@@ -31,7 +31,7 @@ namespace Vezeeta.Service.Services
         public async Task<List<SpecializationDTO>> Top5Specializations()
         {
             //var top5specializations =await _context.specializations.orderbydescending(e=>e.doctors.count()).tolistasync();
-            IQueryable<SpecializationDTO> top5specializations = _unitOfWork.Users.GetAll().OfType<Doctor>()
+            IQueryable<SpecializationDTO> top5specializations = _unitOfWork.Doctors.GetAll()
                 .GroupBy(e => e.Specialization)
                 .OrderByDescending(e => e.Count())
                 .Take(5)
@@ -86,29 +86,29 @@ namespace Vezeeta.Service.Services
             return false;
         }
         //notfinished
-        public async Task<Patient> GetPatientById(string id)
-        {
-            Patient patient = await _unitOfWork.Patients.GetByIdAsync(id);
-            PatientModelDto patientModel = new PatientModelDto()
-            {
-                Image = patient.Photo,
-                FullName = $"{patient.FirstName + patient.LastName}",
-                Email = patient.Email,
-                PhoneNumber = patient.PhoneNumber,
-                Gender = patient.Gender,
-                DateOfBirth = patient.DateOfBirth,
-                Bookings = patient.Bookings.Select(e => new BookingsDTO
-                {
-                    Image = e.Doctor.Photo,
-                    DoctorName = $"{e.Doctor.FirstName + e.Doctor.LastName}",
-                    Specialization = e.Doctor.Specialization.Name,
+        //public async Task<Patient> GetPatientById(string id)
+        //{
+        //    Patient patient = await _unitOfWork.Patients.GetByIdAsync(id);
+        //    PatientModelDto patientModel = new PatientModelDto()
+        //    {
+        //        Image = patient.Photo,
+        //        FullName = $"{patient.FirstName + patient.LastName}",
+        //        Email = patient.Email,
+        //        PhoneNumber = patient.PhoneNumber,
+        //        Gender = patient.Gender,
+        //        DateOfBirth = patient.DateOfBirth,
+        //        Bookings = patient.Bookings.Select(e => new BookingsInfoDto
+        //        {
+        //            Image = e.Doctor.Photo,
+        //            DoctorName = $"{e.Doctor.FirstName + e.Doctor.LastName}",
+        //            Specialization = e.Doctor.Specialization.Name,
 
-                })
-                .ToList(),
-            };
+        //        })
+        //        .ToList(),
+        //    };
 
-            return patient;
-        }
+        //    return patient;
+        //}
         public async Task<bool> AddDiscountCode(DiscountCodeDto newDiscountCode)
         {
             DiscountCode isCodeRegistered = await _unitOfWork.DiscountCodes

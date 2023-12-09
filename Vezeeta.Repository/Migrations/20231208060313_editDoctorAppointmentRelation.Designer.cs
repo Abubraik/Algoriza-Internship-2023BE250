@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vezeeta.Repository;
 
@@ -11,9 +12,11 @@ using Vezeeta.Repository;
 namespace Vezeeta.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231208060313_editDoctorAppointmentRelation")]
+    partial class editDoctorAppointmentRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,7 +220,7 @@ namespace Vezeeta.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
 
-                    b.Property<int?>("DiscountCodeId")
+                    b.Property<int>("DiscountCodeId")
                         .HasColumnType("int");
 
                     b.Property<string>("DoctorId")
@@ -250,7 +253,8 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.HasIndex("TimeSlotId");
+                    b.HasIndex("TimeSlotId")
+                        .IsUnique();
 
                     b.ToTable("Bookings");
                 });
@@ -626,7 +630,7 @@ namespace Vezeeta.Repository.Migrations
                         {
                             Id = "02174cf0–9412–4cfe - afbf - 59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "637c0c48-db61-4e11-a73c-0e63d62e54aa",
+                            ConcurrencyStamp = "ed9bb3a7-b25f-4e78-8ea3-cf3d23bef6a7",
                             DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@vezeeta.com",
                             EmailConfirmed = true,
@@ -635,9 +639,9 @@ namespace Vezeeta.Repository.Migrations
                             LastName = "Vezeeta",
                             LockoutEnabled = false,
                             NormalizedUserName = "admin@vezeeta.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI4Ol6jEWq/G9Y1+1HA9pCuf9TsRu6hVrBYgy0LEz6eYBc8HfBX52pTn10OR+bFl+Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFPJCVmgQR89RjFoCh5UgOSiXoLApZV0j/lazAXu6pU+aiLJk2qGQzdarFiH2Tk4kA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "83fa9f81-1b07-4ec6-88dc-3e803eefce60",
+                            SecurityStamp = "35efe42f-797c-49c8-94b6-41adb444be0d",
                             TwoFactorEnabled = false,
                             UserName = "admin@vezeeta.com"
                         });
@@ -735,7 +739,9 @@ namespace Vezeeta.Repository.Migrations
                 {
                     b.HasOne("Vezeeta.Core.Models.DiscountCode", "DiscountCode")
                         .WithMany("Bookings")
-                        .HasForeignKey("DiscountCodeId");
+                        .HasForeignKey("DiscountCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.Users.Doctor", "Doctor")
                         .WithMany("Bookings")
@@ -750,8 +756,8 @@ namespace Vezeeta.Repository.Migrations
                         .IsRequired();
 
                     b.HasOne("Vezeeta.Core.Models.TimeSlot", "TimeSlot")
-                        .WithMany()
-                        .HasForeignKey("TimeSlotId")
+                        .WithOne()
+                        .HasForeignKey("Vezeeta.Core.Models.Booking", "TimeSlotId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

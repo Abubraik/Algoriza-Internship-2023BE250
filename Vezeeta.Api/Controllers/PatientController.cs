@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices.Models;
@@ -28,27 +30,31 @@ namespace Vezeeta.Api.Controllers
             this._mailService = mailService;
         }
 
-        //[HttpPost("Register")]
-        //public async Task<IActionResult> RegisterPatient([FromBody] AccountModelDto model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-
-        //        string result= await _patientService.AddPatient(model);
-        //        if (result == "OK") 
-        //            return Ok("Registered successfully, please check you email for confirmation");
-
-        //        return BadRequest(result);
-
-        //    }
-        //    return BadRequest(ModelState);
-        //}
-        //[HttpGet("TEST")]
-        //public IActionResult TestEmail()
-        //{
-        //    var message = new Message(new string[] { "Abdullah.abubraik@gmail.com" }, "Testing", "<h2>This is a TEst</h2>");
-        //    _mailService.SendEmail(message);
-        //    return Ok("Sent");
-        //}
-    } 
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery]int pageNumber, [FromQuery]int pageSize, [FromQuery]string search)
+        {
+            var result =await _patientService.SearchForDoctors(pageNumber, pageSize, search);
+            return Ok(result);
+        }
+        [HttpGet("GetAllBookings")]
+        public async Task<IActionResult> GetAllBookings()
+        {
+            var result = await _patientService.GetAllBookings(User);
+            return Ok(result);
+        }
+        [HttpPost("BookAppointment")]
+        public async Task<IActionResult> BookApointment(int timeId ,string discountCode = null)
+        {
+            var result =await _patientService.BookAppointment(timeId,User, discountCode);
+            _mailService.SendEmail("BookingConfirmation",User.Identity.Name,result.Response);
+            return result.IsSuccess? Ok(result) : BadRequest(result);
+        }
+        [HttpDelete("CancelAppointment")]
+        public async Task<IActionResult> CancelAppointment(int BookingId)
+        {
+            var result = await _patientService.CancelAppointment(BookingId);
+            _mailService.SendEmail("BookinCancelation", User.Identity.Name, result.Response);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+    }
 }

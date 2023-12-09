@@ -7,6 +7,7 @@ using Vezeeta.Core.Repositories;
 using Vezeeta.Repository;
 using static Vezeeta.Core.Enums.Enums;
 using Vezeeta.Sevices.Services.Interfaces;
+using Vezeeta.Sevices.Models;
 
 public class DoctorService : IDoctorService
 {
@@ -19,10 +20,10 @@ public class DoctorService : IDoctorService
         this._userManager = userManager;
         this._context = context;
     }
+    //TimeOnly.ParseExact("5:00 pm", "h:mm tt", CultureInfo.InvariantCulture);
 
-    public async Task<Appointment> AddAppointmentAsync(AddAppointmentDto appointmentDto, string doctorName)
+    public async Task<(bool IsSuccess, string Message)> AddAppointmentAsync(AddAppointmentDto appointmentDto, string doctorName)
     {
-        //TimeOnly.ParseExact("5:00 pm", "h:mm tt", CultureInfo.InvariantCulture);
 
         var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
 
@@ -38,9 +39,11 @@ public class DoctorService : IDoctorService
             {
                 DoctorId = doctorId,
                 Price = appointmentDto.Price,
+                DaySchedules = new List<DaySchedule>()
             };
 
             await _unitOfWork.Appointments.AddAsync(appointment);
+            //await _unitOfWork.Complete();
         }
         // Update or add day schedules and time slots
         foreach (var dsDto in appointmentDto.DaySchedules)
@@ -54,6 +57,7 @@ public class DoctorService : IDoctorService
                 daySchedule = new DaySchedule
                 {
                     DayOfWeek = dsDto.DayOfWeek,
+                    TimeSlots = new List<TimeSlot>()
                 };
                 appointment.DaySchedules.Add(daySchedule);
             }
@@ -74,8 +78,9 @@ public class DoctorService : IDoctorService
                         IsBooked = false
                     });
                 }
-                else return null;
+                else return (IsSuccess: false, Message: $"TimeSlot, {tsDto.StartTime} or {tsDto.EndTime}, Already Available..!");
             }
+
         }
 
 
@@ -83,9 +88,9 @@ public class DoctorService : IDoctorService
         // Save all the changes to the database in one go
         await _unitOfWork.Complete();
 
-        // Return the newly created or updated appointment with its related entities
-        return appointment; // Assuming you want to return the first updated or newly added appointment
+        return (IsSuccess: true, Message: "Added Successfully..!");
     }
+
 
 
 

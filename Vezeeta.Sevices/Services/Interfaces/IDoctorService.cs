@@ -8,7 +8,7 @@ namespace Vezeeta.Sevices.Services.Interfaces
     {
         //Task<IEnumerable<Patient>> getBookings(DayOfWeek day, int pageSize, int pageNumber);
         //Task<Booking> confirmBooking(int bookingId);
-        Task<Appointment> AddAppointmentAsync(AddAppointmentDto appointment, string doctorName);
+        Task<(bool IsSuccess, string Message)> AddAppointmentAsync(AddAppointmentDto appointment, string doctorName);
         //Task<Appointment> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateDto, string doctorId);
         Task<(bool IsSuccess, string Message)> UpdateAppointmentTimeAsync(UpdateAppointmentTimeDto updateTimeSlotDto, string doctorName);
         //Task<bool> DeleteAppointmentAsync(int timeId, string doctorName);

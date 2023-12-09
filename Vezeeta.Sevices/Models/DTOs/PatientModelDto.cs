@@ -26,6 +26,6 @@ namespace Vezeeta.Sevices.Models.DTOs
         [Required]
         [ValidEnumValue]
         public DateOnly DateOfBirth { get; set; }
-        public List<BookingsDTO> Bookings { get; set; }
+        public List<BookingsInfoDto> Bookings { get; set; }
     }
 }

@@ -23,8 +23,8 @@ namespace Vezeeta.Core.Models
         [Required]
         public int TimeSlotId { get; set; }
         public TimeSlot TimeSlot { get; set; }
-        [Required]
-        public int DiscountCodeId { get; set; }
+        
+        public int? DiscountCodeId { get; set; }
         public DiscountCode? DiscountCode { get; set; }
         [Required]
         public string PatientId { get; set; }

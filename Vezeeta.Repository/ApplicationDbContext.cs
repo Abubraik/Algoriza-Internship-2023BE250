@@ -81,8 +81,12 @@ namespace Vezeeta.Repository
 
             modelBuilder.Entity<Booking>()
             .HasOne(b => b.TimeSlot)
-            .WithOne()
+            .WithMany()
             .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<Doctor>()
+            //    .HasOne(b => b.Appointments)
+            //    .WithOne();
 
             modelBuilder.Entity<Feedback>()
                 .HasOne(b=>b.Doctor)

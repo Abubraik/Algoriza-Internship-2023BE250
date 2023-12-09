@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using System.Web.Providers.Entities;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices.Models;
@@ -29,13 +30,15 @@ namespace Vezeeta.Sevices.Services
             this._hostingEnvironment = hostingEnvironment;
         }
 
-        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password) where T : AccountModelDto
+        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password,ClaimsPrincipal User) where T : AccountModelDto
         {
             if (await UserExistsAsync(registerUser.Email))
             {
                 return new ApiResponse<string>
                 { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
             }
+            if (CheckIfUserSignedIn(User).Result)
+                return new ApiResponse<string> { IsSuccess = false, StatusCode = 403, Message = "Please Logout first..!" };
 
             string photoPath = null;
 
@@ -74,8 +77,10 @@ namespace Vezeeta.Sevices.Services
 
         //    Combine common logic for authentication and user creation
 
-        public async Task<(bool IsSuccess, string Message)> AuthenticateUserAsync(LoginModel model)
+        public async Task<(bool IsSuccess, string Message)> AuthenticateUserAsync(LoginModel model, ClaimsPrincipal User)
         {
+            if (CheckIfUserSignedIn(User).Result)
+                return (false, User.Identity?.Name +" is already Logged in");
             var user = await _userManager.FindByNameAsync(model.Email);
             if (user == null)
             {
@@ -116,15 +121,22 @@ namespace Vezeeta.Sevices.Services
 
         public async Task<(bool IsSuccess, string Message)> LogoutUserAsync(ClaimsPrincipal User)
         {
-            if (!_signInManager.IsSignedIn(User))
+            if (!CheckIfUserSignedIn(User).Result)
             {
                 return (false, "User Not Signed In!");
             }
             await _signInManager.SignOutAsync();
             return (true, "Signed Out Successfully!");
         }
-
         // Helper methods
+        private async Task<bool> CheckIfUserSignedIn(ClaimsPrincipal User)
+        {
+            if (!_signInManager.IsSignedIn(User))
+            {
+                return false;
+            }
+            return true;
+        }
         private async Task<bool> UserExistsAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

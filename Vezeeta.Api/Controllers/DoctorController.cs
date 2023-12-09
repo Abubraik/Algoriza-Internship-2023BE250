@@ -17,16 +17,15 @@ namespace Vezeeta.Api.Controllers
         public DoctorController(IDoctorService doctorService)
         {
             this._doctorService = doctorService;
+
         }
         [HttpPost("Add")]
         public async Task<IActionResult> AddAppointmentAsync([FromBody] AddAppointmentDto appointment)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            //@e25pq9K!U
-            Appointment newAppointment = await _doctorService.AddAppointmentAsync(appointment, User.Identity!.Name!);
-            if (newAppointment == null) return BadRequest("Could not add appointment");
-            return Ok(newAppointment);
-            //return View();
+            var result = await _doctorService.AddAppointmentAsync(appointment, User.Identity!.Name!);
+            if (!result.IsSuccess) return BadRequest(result.Message);
+            return Ok(result.Message);
         }
 
         [HttpPut("update")]
