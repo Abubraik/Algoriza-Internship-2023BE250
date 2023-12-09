@@ -34,7 +34,7 @@ namespace Vezeeta.Service.Services
                     SpecializationName = s.Name,
                     RequestCount = s.Doctors
                         .SelectMany(d => d.Bookings)
-                        .Count(r=>r.Status == Status.Completed)
+                        .Count(r => r.Status == Status.Completed)
                 })
                 .OrderByDescending(x => x.RequestCount)
                 .Take(5)
@@ -50,13 +50,19 @@ namespace Vezeeta.Service.Services
         //need to make is sort by name if requests is equal.
         public async Task<List<DoctorTop10Dto>> Top10Doctors()
         {
-            var top5doctors =await  _unitOfWork.Users.GetAll().OfType<Doctor>()
+            var top5doctors = await _unitOfWork.Users.GetAll().OfType<Doctor>()
                 .OrderByDescending(e => e.Bookings.Count())
                 .Take(10)
-                .Select(e => new DoctorTop10Dto { Image = e.Photo
-                , FullName = e.NormalizedUserName
-                , Specialization = e.Specialization.Name
-                , NumberOfrequests = e.Bookings.Count(b => b.Status == Status.Completed) })
+                .Select(e => new DoctorTop10Dto
+                {
+                    Image = e.Photo
+                ,
+                    FullName = e.NormalizedUserName
+                ,
+                    Specialization = e.Specialization.Name
+                ,
+                    NumberOfrequests = e.Bookings.Count(b => b.Status == Status.Completed)
+                })
                 .ToListAsync();
             return top5doctors;
         }
@@ -122,11 +128,11 @@ namespace Vezeeta.Service.Services
         //notfinished
         public async Task<PatientModelDto> GetPatientById(string id)
         {
-            var patient = await _unitOfWork.Patients.FindAll(p=>p.Id == id)
-                .Include(e=>e.Bookings)
+            var patient = await _unitOfWork.Patients.FindAll(p => p.Id == id)
+                .Include(e => e.Bookings)
                 .ThenInclude(e => e.Doctor)
-                .ThenInclude(e=>e.Appointments)
-                .ThenInclude(e=>e.DaySchedules)
+                .ThenInclude(e => e.Appointments)
+                .ThenInclude(e => e.DaySchedules)
                 .ThenInclude(e => e.TimeSlots)
                 .FirstOrDefaultAsync();
             PatientModelDto patientModel = new PatientModelDto()
@@ -156,7 +162,7 @@ namespace Vezeeta.Service.Services
             var patientList = await patientQuery.Select(p => _mapper.Map<PatientModelDto>(p)).ToListAsync();
             return patientList;
         }
-          public async Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search)
+        public async Task<List<DoctorInfoDto>> GetAllDoctors(int pageNumber, int pageSize, string search)
         {
             pageNumber = Math.Max(pageNumber, 1);
             var patientQuery = _unitOfWork.Doctors.FindAll(p => p.FirstName.Contains(search)

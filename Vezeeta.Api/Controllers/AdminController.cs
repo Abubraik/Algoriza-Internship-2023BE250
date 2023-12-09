@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Vezeeta.Core.Models.Users;
-using Vezeeta.Core.Repositories;
 using Vezeeta.Services.Models.DTOs;
-using Vezeeta.Sevices.Helpers;
 using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
 
@@ -16,20 +12,12 @@ namespace Vezeeta.Api.Controllers
 
     public class AdminController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IAdminService adminService;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public AdminController(UserManager<ApplicationUser> userManager
-            , SignInManager<ApplicationUser> signInManager, IAdminService adminService, IUnitOfWork unitOfWork, IMapper mapper)
+
+        public AdminController(IAdminService adminService)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             this.adminService = adminService;
-            this._unitOfWork = unitOfWork;
-            this._mapper = mapper;
         }
 
         [HttpGet("NumOfDoctors")]

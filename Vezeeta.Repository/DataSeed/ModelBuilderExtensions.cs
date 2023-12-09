@@ -87,7 +87,7 @@ namespace Vezeeta.Repository.DataSeed
             //  adminUser.PasswordHash = hasher.HashPassword(adminUser, "P@ssw0rd");
             //  modelBuilder.Entity<IdentityUser>().HasData(adminUser);
 
-            
+
             //  modelBuilder.Entity<IdentityUserRole<string>>()
             //      .HasData(new IdentityUserRole<string>
             //      {

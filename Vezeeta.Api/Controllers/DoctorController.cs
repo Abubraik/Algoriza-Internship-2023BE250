@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Vezeeta.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
-using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Api.Controllers
 {

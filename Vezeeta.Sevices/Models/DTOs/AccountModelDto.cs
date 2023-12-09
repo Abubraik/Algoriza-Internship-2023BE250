@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Web.Http.Description;
+﻿using System.ComponentModel.DataAnnotations;
 using Vezeeta.Service.Services;
-using Vezeeta.Sevices.Helpers;
 using static Vezeeta.Core.Enums.Enums;
 
 namespace Vezeeta.Sevices.Models.DTOs
@@ -18,7 +13,7 @@ namespace Vezeeta.Sevices.Models.DTOs
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress]
         public required string Email { get; set; }
-        [Required,Phone]
+        [Required, Phone]
         public required string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Gender is required")]
         [ValidEnumValue]

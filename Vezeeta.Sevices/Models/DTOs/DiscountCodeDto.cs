@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Vezeeta.Service.Services;
 using static Vezeeta.Core.Enums.Enums;
 
@@ -13,10 +8,10 @@ namespace Vezeeta.Services.Models.DTOs
     {
         [Required]
         public string Code { get; set; }
-        [Required] 
+        [Required]
         [ValidEnumValue]
         public DiscountType DiscountType { get; set; }
-        [Required,Range(1,100)]
+        [Required, Range(1, 100)]
         public decimal DiscountValue { get; set; }
         [Required, Range(1, 100)]
         public int NumberOfRequiredBookings { get; set; }

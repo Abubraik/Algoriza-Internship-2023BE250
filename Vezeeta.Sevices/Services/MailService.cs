@@ -1,11 +1,8 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc.Routing;
 using MimeKit;
-using Newtonsoft.Json.Linq;
-using System.Web.Providers.Entities;
 using Vezeeta.Sevices.Models;
 using Vezeeta.Sevices.Services.Interfaces;
-using System.Web.Http.Routing;
 
 namespace Vezeeta.Sevices.Services
 {
@@ -24,12 +21,12 @@ namespace Vezeeta.Sevices.Services
         //    var emailMessage = CreateEmailMessage(message);
         //    Send(emailMessage);
         //}
-        void IMailService.SendEmail(string type, string? username="",
-            string? password="", string? token="", string? link="")
+        void IMailService.SendEmail(string type, string? username = "",
+            string? password = "", string? token = "", string? link = "")
         {
             Message message = new Message(new string[] { username },
                 $"Vezeeta {type}",
-                MessageContent(type,username,password,token,link));
+                MessageContent(type, username, password, token, link));
             var emailMessage = CreateEmailMessage(message);
 
             Send(emailMessage);
@@ -75,17 +72,19 @@ namespace Vezeeta.Sevices.Services
                 $@"<h2>Your UserName: {username}</h2><br>
             <h2>Your Password: {password}</h2><br>
             <h3>Please use this <a href=""{link}"">Link</a> to confirm your email</h3>";
-            }else if(type == "BookingConfirmation")
+            }
+            else if (type == "BookingConfirmation")
             {
                 content = $@"<h3>Your Booking Number {password} has been successfully booked</h3>
 <h4> ThankYou for trusting Vezeeta.";
-            }else if(type == "BookinCancelation")
+            }
+            else if (type == "BookinCancelation")
             {
                 content = $"<h3>Your Booking Number {password} has been cancelled</h3>";
             }
-            return content; 
+            return content;
         }
-        }
-       
     }
+
+}
 

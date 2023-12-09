@@ -1,6 +1,4 @@
-﻿using Vezeeta.Sevices.Models;
-
-namespace Vezeeta.Sevices.Services.Interfaces
+﻿namespace Vezeeta.Sevices.Services.Interfaces
 {
     public interface IMailService
     {

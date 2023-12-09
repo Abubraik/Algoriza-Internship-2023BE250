@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Web.Providers.Entities;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices.Models;
@@ -30,7 +29,7 @@ namespace Vezeeta.Sevices.Services
             this._hostingEnvironment = hostingEnvironment;
         }
 
-        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password,ClaimsPrincipal User) where T : AccountModelDto
+        public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password, ClaimsPrincipal User) where T : AccountModelDto
         {
             if (await UserExistsAsync(registerUser.Email))
             {
@@ -80,7 +79,7 @@ namespace Vezeeta.Sevices.Services
         public async Task<(bool IsSuccess, string Message)> AuthenticateUserAsync(LoginModel model, ClaimsPrincipal User)
         {
             if (CheckIfUserSignedIn(User).Result)
-                return (false, User.Identity?.Name +" is already Logged in");
+                return (false, User.Identity?.Name + " is already Logged in");
             var user = await _userManager.FindByNameAsync(model.Email);
             if (user == null)
             {

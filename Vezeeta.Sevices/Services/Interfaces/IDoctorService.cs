@@ -1,5 +1,4 @@
-﻿using Vezeeta.Core.Models;
-using Vezeeta.Sevices.Models.DTOs;
+﻿using Vezeeta.Sevices.Models.DTOs;
 
 namespace Vezeeta.Sevices.Services.Interfaces
 

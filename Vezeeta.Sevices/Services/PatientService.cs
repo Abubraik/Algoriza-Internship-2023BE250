@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Repositories;
@@ -58,13 +57,13 @@ namespace Vezeeta.Sevices.Services
             Booking newBooking = await CreateBooking(User, timeSlot, appointment, discount);
             await _unitOfWork.Bookings.AddAsync(newBooking);
             await _unitOfWork.Complete();
-            return new ApiResponse<string> { IsSuccess = true, Message = "Booked Successfully..!",Response = newBooking.BookingId.ToString() };
+            return new ApiResponse<string> { IsSuccess = true, Message = "Booked Successfully..!", Response = newBooking.BookingId.ToString() };
         }
 
         public async Task<List<BookingsInfoDto>> GetAllBookings(ClaimsPrincipal User)
         {
             var patient = await _unitOfWork.Patients.Find(e => e.Email == User.Identity!.Name!);
-            var bookings =  _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id).Include(d => d.Doctor).ThenInclude(s=>s.Specialization)
+            var bookings = _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id).Include(d => d.Doctor).ThenInclude(s => s.Specialization)
                 .Include(a => a.Doctor.Appointments)
                 .ThenInclude(a => a.DaySchedules)
                 .ThenInclude(ds => ds.TimeSlots);
@@ -77,16 +76,16 @@ namespace Vezeeta.Sevices.Services
         public async Task<ApiResponse<string>> CancelAppointment(int bookingId)
         {
             var booking = await _unitOfWork.Bookings.Find(e => e.BookingId == bookingId);
-            if(booking.Status == Status.Canceled)
+            if (booking.Status == Status.Canceled)
             {
                 return new ApiResponse<string> { IsSuccess = false, Message = "Already Canceled..!" };
             }
             booking.Status = Status.Canceled;
-            var timeSlot =await _unitOfWork.TimeSlots.Find(t=>t.TiemSlotId == booking.TimeSlotId);
+            var timeSlot = await _unitOfWork.TimeSlots.Find(t => t.TiemSlotId == booking.TimeSlotId);
             timeSlot.IsBooked = false;
             await _unitOfWork.Bookings.UpdateAsync(booking);
             var affectedRows = await _unitOfWork.Complete();
-            return new ApiResponse<string> { IsSuccess = true, Message = "Cancelled Successfully..!" ,Response = bookingId.ToString() };
+            return new ApiResponse<string> { IsSuccess = true, Message = "Cancelled Successfully..!", Response = bookingId.ToString() };
         }
 
         //Helpers

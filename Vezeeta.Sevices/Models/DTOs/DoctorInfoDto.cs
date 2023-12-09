@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vezeeta.Core.Models.Users;
+﻿using Vezeeta.Core.Models.Users;
 
 namespace Vezeeta.Sevices.Models.DTOs
 {
@@ -19,7 +14,7 @@ namespace Vezeeta.Sevices.Models.DTOs
         public List<AppointmentInfoDto>? Appointments { get; set; }
         public DoctorInfoDto()
         {
-            
+
         }
         public DoctorInfoDto(Doctor doctor)
         {

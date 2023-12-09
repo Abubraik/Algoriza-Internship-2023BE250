@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vezeeta.Core.Models;
+﻿using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 
@@ -12,7 +7,7 @@ namespace Vezeeta.Repository.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public IBaseRepository<ApplicationUser> Users {  get; private set; }
+        public IBaseRepository<ApplicationUser> Users { get; private set; }
         public IBaseRepository<Doctor> Doctors { get; private set; }
         public IBaseRepository<Patient> Patients { get; private set; }
         public IBaseRepository<TimeSlot> TimeSlots { get; private set; }
@@ -42,7 +37,7 @@ namespace Vezeeta.Repository.Repositories
 
         public async Task<int> Complete()
         {
-           return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public void Dispose()

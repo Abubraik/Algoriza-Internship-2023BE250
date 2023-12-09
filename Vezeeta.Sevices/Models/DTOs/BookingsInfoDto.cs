@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vezeeta.Core.Models;
+﻿using Vezeeta.Core.Models;
 
 namespace Vezeeta.Sevices.Models.DTOs
 {
@@ -19,13 +14,13 @@ namespace Vezeeta.Sevices.Models.DTOs
         public string? DiscountCode { get; set; }
         public decimal FinalPrice { get; set; }
         public string Status { get; set; }
-        public BookingsInfoDto(DoctorInfoDto doctorInfo,Booking booking)
+        public BookingsInfoDto(DoctorInfoDto doctorInfo, Booking booking)
         {
             BookingId = booking.BookingId;
             Image = doctorInfo.Image;
             DoctorName = doctorInfo.FullName;
             Specialization = doctorInfo.Specialize;
-            Day = booking.Doctor.Appointments.DaySchedules.Where(d=>d.TimeSlots.Any(t=>t.StartTime == booking.TimeSlot.StartTime)).FirstOrDefault().DayOfWeek.ToString();
+            Day = booking.Doctor.Appointments.DaySchedules.Where(d => d.TimeSlots.Any(t => t.StartTime == booking.TimeSlot.StartTime)).FirstOrDefault().DayOfWeek.ToString();
             Time = booking.TimeSlot.StartTime;
             Price = booking.Price;
             DiscountCode = booking.DiscountCode?.Code;

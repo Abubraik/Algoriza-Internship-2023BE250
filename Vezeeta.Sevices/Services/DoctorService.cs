@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Repository;
-using static Vezeeta.Core.Enums.Enums;
+using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Sevices.Services.Interfaces;
+using static Vezeeta.Core.Enums.Enums;
 
 public class DoctorService : IDoctorService
 {

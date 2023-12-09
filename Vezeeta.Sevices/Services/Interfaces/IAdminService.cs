@@ -1,8 +1,6 @@
-﻿using System.Numerics;
-using Vezeeta.Sevices.Models.DTOs;
-using Vezeeta.Core.Models;
-using Vezeeta.Core.Models.Users;
+﻿using Vezeeta.Core.Models.Users;
 using Vezeeta.Services.Models.DTOs;
+using Vezeeta.Sevices.Models.DTOs;
 
 namespace Vezeeta.Sevices.Services.Interfaces
 {

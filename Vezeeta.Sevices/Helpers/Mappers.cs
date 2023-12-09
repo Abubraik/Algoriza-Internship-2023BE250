@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Vezeeta.Sevices.Models.DTOs;
 using Vezeeta.Core.Models;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Services.Models.DTOs;
+using Vezeeta.Sevices.Models.DTOs;
 
 namespace Vezeeta.Sevices.Helpers
 {
-    public class Mappers :Profile
+    public class Mappers : Profile
     {
         public Mappers()
         {
@@ -39,10 +39,10 @@ namespace Vezeeta.Sevices.Helpers
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Photo))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName}  {src.LastName}"))
-                .ForMember(dest=>dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest=> dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
-                .ForMember(dest=>dest.Bookings, opt=> opt.Ignore())
+                .ForMember(dest => dest.Bookings, opt => opt.Ignore())
                 .ReverseMap();
             CreateMap<Doctor, DoctorInfoDto>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Photo))

@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Vezeeta.Core.Models;
-using static Vezeeta.Core.Enums.Enums;
 
-namespace Vezeeta.Sevices.Models.DTOs { 
+namespace Vezeeta.Sevices.Models.DTOs
+{
     public class CreateDoctorModelDto : AccountModelDto
     {
 
