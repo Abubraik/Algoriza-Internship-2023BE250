@@ -17,17 +17,17 @@ namespace Vezeeta.Core.Models
 
         [Required]
         public int TimeSlotId { get; set; }
-        public TimeSlot TimeSlot { get; set; }
+        public virtual TimeSlot TimeSlot { get; set; }
         
         public int? DiscountCodeId { get; set; }
-        public DiscountCode? DiscountCode { get; set; }
+        public virtual DiscountCode? DiscountCode { get; set; }
         [Required]
         public string PatientId { get; set; }
-        public Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; }
         [Required]
         public string DoctorId { get; set; }
-        public Doctor Doctor { get; set; }
-        public Feedback? Feedback { get; set; }
+        public virtual Doctor Doctor { get; set; }
+        public virtual Feedback? Feedback { get; set; }
 
     }
 }

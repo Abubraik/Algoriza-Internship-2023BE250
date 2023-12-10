@@ -23,7 +23,7 @@ namespace Vezeeta.Sevices.Models.DTOs
             FullName = $"{doctor.FirstName} {doctor.LastName}";
             Email = doctor.Email;
             Phone = doctor.PhoneNumber!;
-            Specialize = doctor.Specialization?.Name;
+            Specialize =doctor.Specialization.Name;
             Price = doctor.Appointments.Price;
             Gender = doctor.Gender.ToString();
             Appointments = doctor.Appointments.DaySchedules.Select(ds => new AppointmentInfoDto(ds))?.ToList();

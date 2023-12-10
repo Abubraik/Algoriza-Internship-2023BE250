@@ -14,12 +14,12 @@ namespace Vezeeta.Core.Models
 
         [Required]
         public int BookingId { get; set; }
-        public required Booking Booking { get; set; }
+        public virtual Booking Booking { get; set; }
         [Required]
         public required string PatientId { get; set; }
-        public required Patient Patient { get; set; }
+        public required virtual Patient Patient { get; set; }
         [Required]
         public required string DoctorId { get; set; }
-        public required Doctor Doctor { get; set; }
+        public required virtual Doctor Doctor { get; set; }
     }
 }

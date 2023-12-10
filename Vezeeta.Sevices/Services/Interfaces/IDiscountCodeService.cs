@@ -12,6 +12,7 @@ namespace Vezeeta.Sevices.Services.Interfaces
         Task<bool> AddDiscountCode(DiscountCodeDto discountCode);
         Task<bool> UpdateDiscountCode(int discoundId, DiscountCodeDto updatedDiscountCode);
         Task<bool> DeleteDiscountCode(int discoundId);
+        Task<bool> ActivateDiscountCode(int discoundId);
         Task<bool> DeactivateDiscountCode(int discoundId);
     }
 }

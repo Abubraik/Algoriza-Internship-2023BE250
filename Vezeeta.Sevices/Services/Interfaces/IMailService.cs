@@ -4,6 +4,5 @@
     {
         void SendEmail(string type, string? username = "",
             string? password = "", string? token = "", string? link = "");
-        //void SendEmail(Message message);
     }
 }

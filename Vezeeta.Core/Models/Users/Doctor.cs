@@ -8,10 +8,10 @@ namespace Vezeeta.Core.Models.Users
         public int SpecializationId { get; set; }
         [Required]
         public required string Photo { get; set; }
-        public required Specialization Specialization { get; set; }
-        public Appointment Appointments { get; set; }
-        public List<Booking>? Bookings { get; set; }
-        public List<Feedback>? Feedbacks { get; set; }
+        public virtual required Specialization Specialization { get; set; }
+        public virtual Appointment Appointments { get; set; }
+        public virtual List<Booking>? Bookings { get; set; }
+        public virtual List<Feedback>? Feedbacks { get; set; }
 
     }
 }

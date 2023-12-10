@@ -19,42 +19,49 @@ namespace Vezeeta.Sevices.Services
         public async Task<bool> AddDiscountCode(DiscountCodeDto newDiscountCode)
         {
             DiscountCode isCodeRegistered = await _unitOfWork.DiscountCodes
-                .Find(e => e.Code == newDiscountCode.Code);
+                .FindAsync(e => e.Code == newDiscountCode.Code);
             if (isCodeRegistered != null) return false;
             DiscountCode discountCode = _mapper.Map<DiscountCode>(newDiscountCode);
             await _unitOfWork.DiscountCodes.AddAsync(discountCode);
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return true;
         }
 
         public async Task<bool> UpdateDiscountCode(int discoundId, DiscountCodeDto updatedDiscountCode)
         {
-            DiscountCode discountCode = await _unitOfWork.DiscountCodes.Find(e => e.DiscountCodeId == discoundId); //get Discount entity
+            DiscountCode discountCode = await _unitOfWork.DiscountCodes.FindAsync(e => e.DiscountCodeId == discoundId); //get Discount entity
             if (discountCode == null) return false;
-            var isApplied = await _unitOfWork.Bookings.Find(e => e.DiscountCodeId == discountCode.DiscountCodeId);
+            var isApplied = await _unitOfWork.Bookings.FindAsync(e => e.DiscountCodeId == discountCode.DiscountCodeId);
             if (isApplied != null) return false;
             _mapper.Map(updatedDiscountCode, discountCode);
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return true;
         }
 
         public async Task<bool> DeleteDiscountCode(int discoundId)
         {
-            DiscountCode discountCode = await _unitOfWork.DiscountCodes.Find(e => e.DiscountCodeId == discoundId); //get Discount entity
+            DiscountCode discountCode = await _unitOfWork.DiscountCodes.FindAsync(e => e.DiscountCodeId == discoundId); //get Discount entity
             if (discountCode == null) return false;
-            var isApplied = await _unitOfWork.Bookings.Find(e => e.DiscountCodeId == discountCode.DiscountCodeId);
+            var isApplied = await _unitOfWork.Bookings.FindAsync(e => e.DiscountCodeId == discountCode.DiscountCodeId);
             if (isApplied != null) return false;
             _unitOfWork.DiscountCodes.Remove(discountCode);
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return true;
         }
-
+        public async Task<bool> ActivateDiscountCode(int discoundId)
+        {
+            DiscountCode discountCode = await _unitOfWork.DiscountCodes.FindAsync(e => e.DiscountCodeId == discoundId); //get Discount entity
+            if (discountCode == null || discountCode.IsValid) return false;
+            discountCode.IsValid = true;
+            await _unitOfWork.CompleteAsync();
+            return true;
+        }
         public async Task<bool> DeactivateDiscountCode(int discoundId)
         {
-            DiscountCode discountCode = await _unitOfWork.DiscountCodes.Find(e => e.DiscountCodeId == discoundId); //get Discount entity
-            if (discountCode == null) return false;
+            DiscountCode discountCode = await _unitOfWork.DiscountCodes.FindAsync(e => e.DiscountCodeId == discoundId); //get Discount entity
+            if (discountCode == null || discountCode.IsValid == false) return false;
             discountCode.IsValid = false;
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return true;
         }
 

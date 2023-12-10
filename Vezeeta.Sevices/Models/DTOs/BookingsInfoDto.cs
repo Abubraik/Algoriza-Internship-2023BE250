@@ -14,6 +14,10 @@ namespace Vezeeta.Sevices.Models.DTOs
         public string? DiscountCode { get; set; }
         public decimal FinalPrice { get; set; }
         public string Status { get; set; }
+        public BookingsInfoDto()
+        {
+            
+        }
         public BookingsInfoDto(DoctorInfoDto doctorInfo, Booking booking)
         {
             BookingId = booking.BookingId;

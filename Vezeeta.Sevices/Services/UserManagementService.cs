@@ -160,21 +160,19 @@ namespace Vezeeta.Sevices.Services
             ApplicationUser? applicationUser = null;
             if (registerUser is CreateDoctorModelDto doctorDto)
             {
-                var specialization = _unitOfWork.Specializations.Find(e => e.Name == doctorDto.Specialization).Result;
+                var specialization = _unitOfWork.Specializations.FindAsync(e => e.Name == doctorDto.Specialization).Result;
                 if (specialization == null)
                 {
                     throw new ArgumentException("Specialization NOT found!.");
                 }
 
-                var doctor = _mapper.Map<Doctor>(doctorDto, opts => opts.Items["Photo"] = photoPath); // Assuming the mapper is configured properly to handle Doctor mapping
+                var doctor = _mapper.Map<Doctor>(doctorDto, opts => opts.Items["Photo"] = photoPath); 
                 doctor.Specialization = specialization;
-                //doctor.Photo = photoPath;
                 applicationUser = doctor;
             }
             else if (registerUser is CreatePatientModel patientDto)
             {
-                var patient = _mapper.Map<Patient>(patientDto, opts => opts.Items["Photo"] = photoPath); // Assuming the mapper is configured properly to handle Patient mapping
-                //patient.Photo = photoPath;
+                var patient = _mapper.Map<Patient>(patientDto, opts => opts.Items["Photo"] = photoPath); 
                 applicationUser = patient;
             }
 

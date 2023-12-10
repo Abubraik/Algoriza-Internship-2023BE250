@@ -7,7 +7,7 @@ namespace Vezeeta.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Patient")]
+    //[Authorize(Roles = "Patient")]
     public class PatientController : Controller
     {
         private readonly IPatientService _patientService;

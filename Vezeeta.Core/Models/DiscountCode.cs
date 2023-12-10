@@ -18,7 +18,7 @@ namespace Vezeeta.Core.Models
         [Required]
         public bool IsValid { get; set; } = true;
 
-        public List<Booking> Bookings { get; set; }
+        public virtual List<Booking> Bookings { get; set; }
 
     }
 }

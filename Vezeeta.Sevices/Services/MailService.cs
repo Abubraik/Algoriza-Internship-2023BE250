@@ -16,11 +16,6 @@ namespace Vezeeta.Sevices.Services
             this._emailConfiguration = emailConfiguration;
             this._urlHelperFactory = urlHelperFactory;
         }
-        //void IMailService.SendEmail(Message message)
-        //{
-        //    var emailMessage = CreateEmailMessage(message);
-        //    Send(emailMessage);
-        //}
         void IMailService.SendEmail(string type, string? username = "",
             string? password = "", string? token = "", string? link = "")
         {

@@ -22,12 +22,9 @@ namespace Vezeeta.Sevices.Services
 
         public async Task<List<BookingsInfoDto>> GetAllBookings(string userId)
         {
-            var patient = await _unitOfWork.Patients.Find(e => e.Email == userId);
-            var bookings = _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id).Include(d => d.Doctor).ThenInclude(s => s.Specialization)
-                .Include(a => a.Doctor.Appointments)
-                .ThenInclude(a => a.DaySchedules)
-                .ThenInclude(ds => ds.TimeSlots);
-            ;
+            var patient = await _unitOfWork.Patients.FindAsync(e => e.Email == userId);
+            var bookings = _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id);
+            
             var doctor = bookings.Select(e => new DoctorInfoDto(e.Doctor)).FirstOrDefault();
             var bookingsList = await bookings.Select(b => new BookingsInfoDto(doctor, b)).ToListAsync();
             return bookingsList;
@@ -50,36 +47,33 @@ namespace Vezeeta.Sevices.Services
             }
             var newBooking = await CreateBooking(userId, timeSlot, appointment, discount);
             await _unitOfWork.Bookings.AddAsync(newBooking);
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return new ApiResponse<string> { IsSuccess = true, Message = "Booked Successfully..!", Response = newBooking.BookingId.ToString() };
         }
 
         public async Task<ApiResponse<string>> CancelBookingAsync(int bookingId)
         {
-            var booking = await _unitOfWork.Bookings.Find(e => e.BookingId == bookingId);
+            var booking = await _unitOfWork.Bookings.FindAsync(e => e.BookingId == bookingId);
             if (booking.Status == Status.Canceled)
             {
                 return new ApiResponse<string> { IsSuccess = false, Message = "Already Canceled..!" };
             }
             booking.Status = Status.Canceled;
-            var timeSlot = await _unitOfWork.TimeSlots.Find(t => t.TiemSlotId == booking.TimeSlotId);
+            var timeSlot = await _unitOfWork.TimeSlots.FindAsync(t => t.TiemSlotId == booking.TimeSlotId);
             timeSlot.IsBooked = false;
             await _unitOfWork.Bookings.UpdateAsync(booking);
-            var affectedRows = await _unitOfWork.Complete();
+            var affectedRows = await _unitOfWork.CompleteAsync();
             return new ApiResponse<string> { IsSuccess = true, Message = "Cancelled Successfully..!", Response = bookingId.ToString() };
         }
 
-        //TEST  !!
+        
         public async Task<(bool IsSuccess, string Message)> AddAppointmentAsync(AddAppointmentDto appointmentDto, string doctorName)
         {
 
             var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
 
             var iQueryableAppointments = _unitOfWork.Appointments.FindAll(a => a.DoctorId == doctorId);
-            var appointment = await iQueryableAppointments
-                .Include(e => e.DaySchedules)
-                .ThenInclude(e => e.TimeSlots)
-                .SingleOrDefaultAsync(a => a.DoctorId == doctorId);
+            var appointment = await iQueryableAppointments.SingleOrDefaultAsync(a => a.DoctorId == doctorId);
 
             if (appointment == null)
             {
@@ -134,7 +128,7 @@ namespace Vezeeta.Sevices.Services
 
 
 
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
 
             return (IsSuccess: true, Message: "Added Successfully..!");
         }
@@ -206,9 +200,9 @@ namespace Vezeeta.Sevices.Services
                 return (IsSuccess: false, Message: "Times is NOT valid..!");
             }
             var timeSlotToUpdate = await _unitOfWork.TimeSlots
-                .Find(e => e.TiemSlotId == updateTimeSlotDto.TimeSlotId);
+                .FindAsync(e => e.TiemSlotId == updateTimeSlotDto.TimeSlotId);
 
-            var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId && (e.DoctorId == doctorId));
+            var checkBookingStatus = await _unitOfWork.Bookings.FindAsync(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId && (e.DoctorId == doctorId));
             //check if it is already booked || The old timeslot doesn't exist
             if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked || checkBookingStatus == null ||
                 (checkBookingStatus != null && checkBookingStatus.Status != Status.Canceled))
@@ -230,13 +224,13 @@ namespace Vezeeta.Sevices.Services
 
         {
             var doctorId = _userManager.FindByNameAsync(doctorName).Result!.Id;
-            var appointment = await _unitOfWork.Appointments.Find(e => e.DoctorId == doctorId);
-            var timeSlot = await _unitOfWork.TimeSlots.Find(e => e.TiemSlotId == timeId);
+            var appointment = await _unitOfWork.Appointments.FindAsync(e => e.DoctorId == doctorId);
+            var timeSlot = await _unitOfWork.TimeSlots.FindAsync(e => e.TiemSlotId == timeId);
             if (appointment == null || timeSlot == null)
             {
                 return (IsSuccess: false, Message: "TimeSlot is not available..!");
             }
-            var checkBookingStatus = await _unitOfWork.Bookings.Find(e => e.TimeSlotId == timeId && e.DoctorId == doctorId);
+            var checkBookingStatus = await _unitOfWork.Bookings.FindAsync(e => e.TimeSlotId == timeId && e.DoctorId == doctorId);
 
             if (checkBookingStatus != null)
             {
@@ -245,7 +239,7 @@ namespace Vezeeta.Sevices.Services
             }
 
             _unitOfWork.TimeSlots.Remove(timeSlot);
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return (IsSuccess: true, Message: "TimeSlot Deleted..!");
         }
         public async Task<(bool isSuccess, string Message)> ConfirmCheckupAsync(int bookingId)
@@ -257,25 +251,25 @@ namespace Vezeeta.Sevices.Services
                 return (false, "Already Canceled..!");
             booking.Status = Status.Completed;
             booking.TimeSlot.IsBooked = false;
-            await _unitOfWork.Complete();
+            await _unitOfWork.CompleteAsync();
             return (true, "Confirmed Successfully..!");
         }
         //Helpers
         private async Task<TimeSlot> GetTimeSlotAsync(int timeId)
         {
-            return await _unitOfWork.TimeSlots.Find(e => e.TiemSlotId == timeId);
+            return await _unitOfWork.TimeSlots.FindAsync(e => e.TiemSlotId == timeId);
         }
 
         private async Task<Appointment> GetAppointmentAsync(int timeId)
         {
-            return await _unitOfWork.Appointments.Find(e => e.AppointmentId == e.DaySchedules
+            return await _unitOfWork.Appointments.FindAsync(e => e.AppointmentId == e.DaySchedules
             .FirstOrDefault(d => d.TimeSlots.Any(d => d.TiemSlotId == timeId))!
             .AppointmentId);
         }
 
         private async Task<DiscountCode> GetDiscountCodeAsync(string discountCode)
         {
-            return await _unitOfWork.DiscountCodes.Find(e => e.Code == discountCode);
+            return await _unitOfWork.DiscountCodes.FindAsync(e => e.Code == discountCode);
         }
 
         private bool ValidateBooking(TimeSlot timeSlot, Appointment appointment, out ApiResponse<string> response)
@@ -296,7 +290,7 @@ namespace Vezeeta.Sevices.Services
 
         private async Task<Booking> CreateBooking(string userId, TimeSlot timeSlot, Appointment appointment, DiscountCode discountCode)
         {
-            var patient = await _unitOfWork.Patients.Find(e => e.Email == userId);
+            var patient = await _unitOfWork.Patients.FindAsync(e => e.Email == userId);
             var finalPrice = appointment.Price;
             if (discountCode != null)
             {

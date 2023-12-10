@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Vezeeta.Core.Models.Users;
@@ -96,29 +97,32 @@ namespace Vezeeta.Api.Controllers
         }
 
         //--------------------------------------------------------------Patients------------------------------------------//
-        [HttpGet("GetPatient")]
-        public async Task<IActionResult> GetPatient([FromQuery] string id) 
-        { return Ok(await _patientService.GetPatientById(id)); }
+        [HttpGet("GetPatientById")]
+        public async Task<IActionResult> GetPatient([FromQuery] string id)
+        {
+            var result = await _patientService.GetPatientById(id);
+            return result != null ? Ok(result) : NotFound();
+        }
 
         [HttpGet("SearchForPatients")]
         public async Task<IActionResult> GetAllPatients([FromQuery] PaginatedSearchModel paginatedSearch)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _patientService.GetAllPatients(paginatedSearch)); 
+            return Ok(await _patientService.GetAllPatients(paginatedSearch));
         }
 
 
         //-------------------------------------------------------------------------------Discount Codes------------------------------------------//
         [HttpPost("AddDiscountCode")]
-        public async Task<IActionResult> AddDiscountCode([FromBody] DiscountCodeDto discountCode) { 
-        
-            if(ModelState.IsValid)
+        public async Task<IActionResult> AddDiscountCode([FromBody] DiscountCodeDto discountCode) {
+
+            if (ModelState.IsValid)
             {
-                if(await _discountCodeService.AddDiscountCode(discountCode))
+                if (await _discountCodeService.AddDiscountCode(discountCode))
                     return Ok();
                 else
                     return BadRequest();
-            }    
+            }
             return BadRequest(ModelState);
         }
 
@@ -147,18 +151,21 @@ namespace Vezeeta.Api.Controllers
             }
             return BadRequest(ModelState);
         }
+        [HttpPut("ActivateDiscounCode")]
+        public async Task<IActionResult> ActivateDiscounCode([FromQuery] int discountId)
+        {
+            if (await _discountCodeService.ActivateDiscountCode(discountId))
+                return Ok();
 
+            return BadRequest();
+
+        }
         [HttpPut("DeactivateDiscounCode")]
         public async Task<IActionResult> DeactivateDiscounCode([FromQuery] int discountId)
         {
-            if (ModelState.IsValid)
-            {
-                if (await _discountCodeService.DeactivateDiscountCode(discountId))
-                    return Ok();
-                else
-                    return BadRequest();
-            }
-            return BadRequest(ModelState);
+            if (await _discountCodeService.DeactivateDiscountCode(discountId))
+                return Ok();
+            return BadRequest();
         }
 
         #region AdminRegiste

@@ -17,7 +17,7 @@ namespace Vezeeta.Core.Models
 
         [Required]
         public int DayScheduleId { get; set; }
-        public DaySchedule DaySchedule { get; set; }
+        public virtual DaySchedule DaySchedule { get; set; }
 
     }
 }

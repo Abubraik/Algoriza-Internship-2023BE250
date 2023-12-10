@@ -100,30 +100,6 @@ namespace Vezeeta.Repository
                 .OnDelete(DeleteBehavior.Restrict);
 
  
-            #region
-            //modelBuilder.Entity<TimeSlot>()
-            //    .Property(e => e.startTime)
-            //    .HasColumnType("time");
-
-            //modelBuilder.Entity<TimeSlot>()
-            //    .Property(e => e.endTime)
-            //.HasColumnType("time");
-
-            //modelBuilder.Entity<Feedback>()
-            //    .HasOne(e => e.booking)
-            //    .WithOne();
-            //modelBuilder.Entity<DoctorUser>()
-            //    .HasMany(b => b.feedbacks)
-            //    .WithOne();
-            //modelBuilder.Entity<Feedbacks>()
-            //    .HasOne(b => b.patient)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.patientId);
-            //modelBuilder.Entity<Feedbacks>()
-            //    .HasOne(b => b.doctor)
-            //    .WithMany()
-            //    .HasForeignKey(e => e.doctorId);
-            #endregion
         }
 
         public DbSet<Doctor> Doctors { get; set; }

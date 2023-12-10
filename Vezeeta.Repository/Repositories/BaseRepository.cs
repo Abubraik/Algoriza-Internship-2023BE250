@@ -15,14 +15,6 @@ namespace Vezeeta.Repository.Repositories
             this._context = context;
             this._entities = _context.Set<T>();
         }
-
-        //public async Task<T> GetById(int id) => await _entities.FindAsync(id) ?? null;
-
-        //public async Task<IEnumerable<T>> GetAll(int pageNumber, int pageSize)
-        //{
-        //    return await _entities.Skip((pageNumber * 1) * pageSize).Take(pageSize).ToListAsync();
-        //}
-
         public async Task<T> GetByIdAsync(string id)
         {
             return await _entities.FindAsync(id);
@@ -49,7 +41,7 @@ namespace Vezeeta.Repository.Repositories
             _entities.Remove(entity);
         }
 
-        public async Task<T> Find(Expression<Func<T, bool>> predicate, string[] includes = null)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> predicate, string[] includes = null)
         {
             IQueryable<T> query = _entities;
             if (includes != null)
@@ -84,23 +76,6 @@ namespace Vezeeta.Repository.Repositories
 
             return queryable.Where(predicate).Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
-        public EntityEntry Explicit(T entity)
-        {
-            return _context.Entry(entity);
-        }
-        private async Task<IEnumerable<T>> GetData(int pageNumber, int pageSize,IEnumerable<T> entity)
-        {
-            if (pageNumber <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number should be greater than 0.");
-            }
 
-            if (pageSize <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size should be greater than 0.");
-            }
-            return entity.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-        }
-        //retrun context.stocks.Skip((pageNumber - 1) * PageSize).Take(PageSize);
     }
 }

@@ -4,8 +4,8 @@
     {
         public string? Photo{ get; set; }
 
-        public List<Booking>? Bookings { get; set; }
-        public List<Feedback>? Feedbacks { get; set; }
+        public virtual List<Booking>? Bookings { get; set; }
+        public virtual List<Feedback>? Feedbacks { get; set; }
 
     }
 }

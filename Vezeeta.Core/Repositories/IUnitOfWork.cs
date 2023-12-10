@@ -17,6 +17,6 @@ namespace Vezeeta.Core.Repositories
         IBaseRepository<DiscountCode> DiscountCodes { get; }
         IBaseRepository<Booking> Bookings { get; }
 
-        Task<int> Complete();
+        Task<int> CompleteAsync();
     }
 }

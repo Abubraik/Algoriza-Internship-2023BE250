@@ -7,10 +7,9 @@ namespace Vezeeta.Core.Repositories
     {
         Task<T> GetByIdAsync(string id);
         IQueryable<T> GetAll();
-        Task<T> Find(Expression<Func<T, bool>> predicate, string[] includes = null);
+        Task<T> FindAsync(Expression<Func<T, bool>> predicate, string[] includes = null);
         IQueryable<T> FindAll(Expression<Func<T, bool>> predicate, string[] includes = null);
         IQueryable<T> FindAll(Expression<Func<T, bool>> predicate, int pageNumber, int pageSize, string[] includes = null);
-        EntityEntry Explicit(T entity);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         void Remove(T entity);

@@ -10,10 +10,10 @@ namespace Vezeeta.Core.Models
         [Required]
         public Days DayOfWeek { get; set; }
 
-        public List<TimeSlot> TimeSlots { get; set; }
+        public virtual List<TimeSlot> TimeSlots { get; set; }
 
         [Required]
         public int AppointmentId { get; set; }
-        public Appointment Appointment { get; set; }
+        public virtual Appointment Appointment { get; set; }
     }
 }
