@@ -41,6 +41,21 @@ namespace Vezeeta.Sevices.Services
             if(patient == null)  return null; 
             return _mapper.Map<PatientModelDto>(patient);
         }
+        public async Task<List<PatientModelDto>> GetAllDoctorPatientsAsync(string userId, DoctorPaginatedSearchModel doctorPaginatedSearchModel)
+        {
+            doctorPaginatedSearchModel.PageNumber = Math.Max(doctorPaginatedSearchModel.PageNumber, 1);
+            var doctor = await _unitOfWork.Doctors.FindAsync(e => e.Email == userId);
+            var bookings = await _unitOfWork.Bookings.FindAll(e => e.DoctorId == doctor.Id
+            && e.Doctor.Appointments.DaySchedules
+            .FirstOrDefault(d => d.TimeSlots.Any(t => t.StartTime == e.TimeSlot.StartTime))!.DayOfWeek == doctorPaginatedSearchModel.Day
+            && (e.Status == Status.Pending || e.Status == Status.Completed)).ToListAsync();
+
+            var patientList = bookings.Select(b => new PatientModelDto(b.Patient, b)).ToList();
+            var result = patientList
+                .Skip((doctorPaginatedSearchModel.PageNumber - 1) * doctorPaginatedSearchModel.PageSize)
+                .Take(doctorPaginatedSearchModel.PageSize).ToList();
+            return result;
+        }
 
 
     }

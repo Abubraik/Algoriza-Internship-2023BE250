@@ -12,11 +12,13 @@ namespace Vezeeta.Api.Controllers
     public class DoctorController : Controller
     {
         private readonly IDoctorService _doctorService;
+        private readonly IPatientService _paitentService;
         private readonly IAppointmentService _appointmentService;
-        public DoctorController(IDoctorService doctorService, IAppointmentService appointmentService)
+        public DoctorController(IDoctorService doctorService, IAppointmentService appointmentService, IPatientService paitentService)
         {
-            this._doctorService = doctorService;
+            _doctorService = doctorService;
             _appointmentService = appointmentService;
+            _paitentService = paitentService;
         }
         [HttpPost("AddAppointment")]
         public async Task<IActionResult> AddAppointmentAsync([FromBody] AddAppointmentDto appointment)
@@ -45,10 +47,10 @@ namespace Vezeeta.Api.Controllers
         }
 
         [HttpGet("GetAllPatients")]
-        public async Task<IActionResult> GetAllPatientsAsync([FromQuery]Days day, [FromQuery] PaginatedSearchModel paginatedSearch)
+        public async Task<IActionResult> GetAllPatientsAsync([FromQuery] DoctorPaginatedSearchModel doctorPaginatedSearchModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState); ;
-            return Ok(await _doctorService.GetAllDoctorPatientsAsync(User.Identity!.Name!, day, paginatedSearch));
+            return Ok(await _paitentService.GetAllDoctorPatientsAsync(User.Identity!.Name!, doctorPaginatedSearchModel));
         }
 
         [HttpPut("ConfirmCheckup")]

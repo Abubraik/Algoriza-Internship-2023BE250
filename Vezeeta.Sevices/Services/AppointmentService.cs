@@ -23,10 +23,10 @@ namespace Vezeeta.Sevices.Services
         public async Task<List<BookingsInfoDto>> GetAllBookings(string userId)
         {
             var patient = await _unitOfWork.Patients.FindAsync(e => e.Email == userId);
-            var bookings = _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id);
+            var bookings = await _unitOfWork.Bookings.FindAll(e => e.PatientId == patient.Id).ToListAsync();
             
             var doctor = bookings.Select(e => new DoctorInfoDto(e.Doctor)).FirstOrDefault();
-            var bookingsList = await bookings.Select(b => new BookingsInfoDto(doctor, b)).ToListAsync();
+            var bookingsList = bookings.Select(b => new BookingsInfoDto(doctor, b)).ToList();
             return bookingsList;
         }
 
@@ -48,7 +48,7 @@ namespace Vezeeta.Sevices.Services
             var newBooking = await CreateBooking(userId, timeSlot, appointment, discount);
             await _unitOfWork.Bookings.AddAsync(newBooking);
             await _unitOfWork.CompleteAsync();
-            return new ApiResponse<string> { IsSuccess = true, Message = "Booked Successfully..!", Response = newBooking.BookingId.ToString() };
+            return new ApiResponse<string> { IsSuccess = true, Message = "Booked Successfully..!", Response ="Your Booking id: "+ newBooking.BookingId.ToString() };
         }
 
         public async Task<ApiResponse<string>> CancelBookingAsync(int bookingId)
@@ -204,7 +204,7 @@ namespace Vezeeta.Sevices.Services
 
             var checkBookingStatus = await _unitOfWork.Bookings.FindAsync(e => e.TimeSlotId == timeSlotToUpdate.TiemSlotId && (e.DoctorId == doctorId));
             //check if it is already booked || The old timeslot doesn't exist
-            if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked || checkBookingStatus == null ||
+            if (timeSlotToUpdate == null || timeSlotToUpdate.IsBooked ||
                 (checkBookingStatus != null && checkBookingStatus.Status != Status.Canceled))
             {
                 return (IsSuccess: false, Message: "TimeSlot is not available or already booked..!");
@@ -217,6 +217,7 @@ namespace Vezeeta.Sevices.Services
             }
             timeSlotToUpdate.StartTime = newStartTime;
             timeSlotToUpdate.EndTime = newEndTime;
+            await _unitOfWork.CompleteAsync();
             return (IsSuccess: true, Message: "TimeSlot updated Successfully..!");
         }
 

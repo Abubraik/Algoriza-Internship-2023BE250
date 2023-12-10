@@ -14,8 +14,7 @@ namespace Vezeeta.Sevices.Services.Interfaces
         Task<Doctor> EditDoctor(string id, CreateDoctorModelDto doctor);
         Task<object> GetDoctorById(string id);
         Task<bool> DeleteDoctor(string id);
-        Task<List<DoctorInfoDto>> SearchForDoctors(PaginatedSearchModel paginatedSearch);
-        Task<List<PatientModelDto>> GetAllDoctorPatientsAsync(string userId, Days day, PaginatedSearchModel paginatedSearch);
+        Task<List<DoctorInfoDto>> SearchForDoctorsAppointments(PaginatedSearchModel paginatedSearch);
 
     }
 }

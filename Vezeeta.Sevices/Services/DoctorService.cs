@@ -52,18 +52,18 @@ public class DoctorService : IDoctorService
         var patientList = patientQuery.Select(p => new DoctorInfoDto(p)).ToList();
         return patientList;
     }
-    public async Task<List<DoctorInfoDto>> SearchForDoctors(PaginatedSearchModel paginatedSearch)
+    public async Task<List<DoctorInfoDto>> SearchForDoctorsAppointments(PaginatedSearchModel paginatedSearch)
     {
         paginatedSearch.PageNumber = Math.Max(paginatedSearch.PageNumber, 1);
 
-        var doctorsQuery = _unitOfWork.Doctors.FindAll(d => d.FirstName.Contains(paginatedSearch.Search)
+        var doctorsQuery =await _unitOfWork.Doctors.FindAll(d => d.FirstName.Contains(paginatedSearch.Search)
         || d.LastName.Contains(paginatedSearch.Search)
         || d.Email.Contains(paginatedSearch.Search)
         || d.PhoneNumber!.Contains(paginatedSearch.Search)
         , paginatedSearch.PageNumber
-        , paginatedSearch.PageSize);
+        , paginatedSearch.PageSize).ToListAsync();
 
-        var doctorList = await doctorsQuery.Select(d => new DoctorInfoDto(d)).ToListAsync();
+        var doctorList = doctorsQuery.Select(d => new DoctorInfoDto(d)).ToList();
 
         return doctorList;
     }
@@ -110,27 +110,6 @@ public class DoctorService : IDoctorService
             return true;
         }
         return false;
-    }
-
-
-    public async Task<List<PatientModelDto>> GetAllDoctorPatientsAsync(string userId, Days day,PaginatedSearchModel paginatedSearch)
-    {
-        paginatedSearch.PageNumber = Math.Max(paginatedSearch.PageNumber, 1);
-        var doctor = await _unitOfWork.Doctors.FindAsync(e => e.Email == userId);
-        var bookings = await _unitOfWork.Bookings.FindAll(e => e.DoctorId == doctor.Id
-        && e.Doctor.Appointments.DaySchedules.FirstOrDefault(d => d.TimeSlots.Any(t => t.StartTime == e.TimeSlot.StartTime))!.DayOfWeek == day
-        && (e.Status == Status.Pending || e.Status == Status.Completed)).ToListAsync();
-
-        var patientList = bookings
-            .Where(b => b.Patient.FirstName.Contains(paginatedSearch.Search)
-            || b.Patient.LastName.Contains(paginatedSearch.Search)
-            || b.Patient.Email.Contains(paginatedSearch.Search)
-            || b.Patient.PhoneNumber!.Contains(paginatedSearch.Search))
-            .Select(b => new PatientModelDto(b.Patient, b)).ToList();
-        var result =  patientList
-            .Skip((paginatedSearch.PageNumber - 1) * paginatedSearch.PageSize)
-            .Take(paginatedSearch.PageSize).ToList();
-        return result;
     }
 
 }

@@ -24,11 +24,11 @@ namespace Vezeeta.Api.Controllers
             _doctorService = doctorService;
         }
 
-        [HttpGet("Search")]
+        [HttpGet("SearchForDoctorsAppointments")]
         public async Task<IActionResult> Search([FromQuery]PaginatedSearchModel paginatedSearch)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _doctorService.SearchForDoctors(paginatedSearch);
+            var result = await _doctorService.SearchForDoctorsAppointments(paginatedSearch);
             return Ok(result);
         }
         [HttpGet("GetAllBookings")]
