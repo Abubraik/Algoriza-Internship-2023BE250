@@ -14,7 +14,7 @@ namespace Vezeeta.Sevices.Models.DTOs
         [Required(ErrorMessage = "Email address is required")]
         [EmailAddress]
         public required string Email { get; set; }
-        [Required, Phone]
+        [Required(ErrorMessage = "Phone is not valid!"), Phone,MinLength(10),MaxLength(11)]
         public required string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Gender is required")]
         [ValidEnumValue]

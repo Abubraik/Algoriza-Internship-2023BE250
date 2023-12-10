@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Core.Repositories;
 using Vezeeta.Sevices.Models;
@@ -18,15 +22,17 @@ namespace Vezeeta.Sevices.Services
         public readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IConfiguration _configuration;
 
         public UserManagementSevice(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IMapper mapper, IHostingEnvironment hostingEnvironment)
+            SignInManager<ApplicationUser> signInManager, IMapper mapper, IHostingEnvironment hostingEnvironment, IConfiguration configuration)
         {
-            this._unitOfWork = unitOfWork;
-            this._userManager = userManager;
-            this._signInManager = signInManager;
-            this._mapper = mapper;
-            this._hostingEnvironment = hostingEnvironment;
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
+            _configuration = configuration;
         }
 
         public async Task<ApiResponse<string>> CreateUserAsync<T>(T registerUser, string _password, ClaimsPrincipal User) where T : AccountModelDto
@@ -36,10 +42,10 @@ namespace Vezeeta.Sevices.Services
                 return new ApiResponse<string>
                 { IsSuccess = false, StatusCode = 403, Message = "User already exists!" };
             }
-            if (CheckIfUserSignedIn(User).Result)
+            if (CheckIfUserSignedIn(User))
                 return new ApiResponse<string> { IsSuccess = false, StatusCode = 403, Message = "Please Logout first..!" };
 
-            string photoPath = null;
+            string? photoPath = null;
 
             if (registerUser is CreateDoctorModelDto doctorDto && doctorDto.Photo != null)
             {
@@ -74,12 +80,12 @@ namespace Vezeeta.Sevices.Services
             { IsSuccess = true, StatusCode = 201, Message = "User created successfully!", Response = token };
         }
 
-        //    Combine common logic for authentication and user creation
-
         public async Task<(bool IsSuccess, string Message)> AuthenticateUserAsync(LoginModel model, ClaimsPrincipal User)
         {
-            if (CheckIfUserSignedIn(User).Result)
+            if (CheckIfUserSignedIn(User))
+            {
                 return (false, User.Identity?.Name + " is already Logged in");
+            }
             var user = await _userManager.FindByNameAsync(model.Email);
             if (user == null)
             {
@@ -91,14 +97,23 @@ namespace Vezeeta.Sevices.Services
                 return (false, "Email Not Confirmed!");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
-            if (result.Succeeded)
+            if(await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                return (true, "Signed in successfully");
+                var authClaims = new List<Claim>
+                {
+                    new (ClaimTypes.Name, user.Email),
+                    new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+                var userRoles = await _userManager.GetRolesAsync(user);
+                authClaims.Add(new Claim(ClaimTypes.Role, userRoles.FirstOrDefault()!));
+                var jwtToken = GetToken(authClaims);
+
+                return (true,new JwtSecurityTokenHandler().WriteToken(jwtToken));
             }
 
             return (false, "Password Not Correct");
         }
+
         public async Task<ApiResponse<string>> ConfirmUserEmailAsync(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -120,20 +135,18 @@ namespace Vezeeta.Sevices.Services
 
         public async Task<(bool IsSuccess, string Message)> LogoutUserAsync(ClaimsPrincipal User)
         {
-            if (!CheckIfUserSignedIn(User).Result)
+            if (!CheckIfUserSignedIn(User))
             {
                 return (false, "User Not Signed In!");
             }
             await _signInManager.SignOutAsync();
             return (true, "Signed Out Successfully!");
         }
+
         // Helper methods
-        private async Task<bool> CheckIfUserSignedIn(ClaimsPrincipal User)
+        private bool CheckIfUserSignedIn(ClaimsPrincipal User)
         {
-            if (!_signInManager.IsSignedIn(User))
-            {
-                return false;
-            }
+            if (!_signInManager.IsSignedIn(User)) return false;
             return true;
         }
         private async Task<bool> UserExistsAsync(string email)
@@ -144,7 +157,7 @@ namespace Vezeeta.Sevices.Services
 
         private ApplicationUser GetUserEntity<T>(T registerUser, string photoPath = "") where T : AccountModelDto
         {
-            ApplicationUser applicationUser = null;
+            ApplicationUser? applicationUser = null;
             if (registerUser is CreateDoctorModelDto doctorDto)
             {
                 var specialization = _unitOfWork.Specializations.Find(e => e.Name == doctorDto.Specialization).Result;
@@ -183,7 +196,7 @@ namespace Vezeeta.Sevices.Services
         {
             return typeof(T) == typeof(CreateDoctorModelDto) ? "Doctor" : "Patient";
         }
-        private async Task<string> SavePhotoAsync(IFormFile photo)
+        private async Task<string?> SavePhotoAsync(IFormFile photo)
         {
             if (photo != null)
             {
@@ -199,7 +212,19 @@ namespace Vezeeta.Sevices.Services
                 return uniqueFileName;
             }
 
-            return null; // Return null if photo is not provided (optional for patients)
+            return null;
+        }
+        private JwtSecurityToken GetToken(List<Claim> authClaim)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(1),
+                claims: authClaim,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+            return token;
         }
 
     }

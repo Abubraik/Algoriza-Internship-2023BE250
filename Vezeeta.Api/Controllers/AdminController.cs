@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Vezeeta.Core.Models.Users;
 using Vezeeta.Services.Models.DTOs;
@@ -9,83 +10,87 @@ namespace Vezeeta.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
-        private readonly IAdminService adminService;
-
-
-        public AdminController(IAdminService adminService)
+        private readonly IAdminService _adminService;
+        private readonly IDoctorService _doctorService;
+        private readonly IPatientService _patientService;
+        private readonly IDiscountCodeService _discountCodeService;
+        public AdminController(IAdminService adminService, IDoctorService doctorService,
+            IPatientService patientService, IDiscountCodeService discountCodeService)
         {
-            this.adminService = adminService;
+            _adminService = adminService;
+            _doctorService = doctorService;
+            _patientService = patientService;
+            _discountCodeService = discountCodeService;
         }
-
         [HttpGet("NumOfDoctors")]
         public async Task<IActionResult> NumOfDoctors()
         {
-            return Ok(await adminService.NumOfDoctors());
+            return Ok(await _doctorService.NumOfDoctors());
         }
 
         [HttpGet("NumOfPatients")]
         public async Task<IActionResult> NumOfPatients()
         {
-            return Ok(await adminService.NumOfPatients());
+            return Ok(await _patientService.NumOfPatients());
         }
 
         [HttpGet("NumOfRequests")]
         public async Task<IActionResult> NumOfRequests()
         {
-            return Ok(await adminService.GetTotalRequests());
+            return Ok(await _adminService.GetTotalRequests());
         }
 
         [HttpGet("Top5Specializations")]
         public async Task<IActionResult> Top5Specializations()
         {
-            return Ok(await adminService.Top5Specializations());
+            return Ok(await _adminService.Top5Specializations());
         }
 
         [HttpGet("Top10Doctors")]
         public async Task<IActionResult> Top10Doctors()
         {
-            var result = await adminService.Top10Doctors();
+            var result = await _doctorService.Top10Doctors();
             return Ok(result);
         }
 
 
         //  -------------------------------------------------------------------------------------------------------------------------------- //
-        [HttpGet("Doctor/GetById")]
+        [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById([FromQuery] string id)
         {
-            var doctor = await adminService.GetDoctorById(id);
+            var doctor = await _doctorService.GetDoctorById(id);
             if (doctor == null) return NotFound("No Doctor with this ID");
             return Ok(doctor);
         }
 
         [HttpGet("SearchForDoctors")]
-        public async Task<IActionResult> GetAllDoctors(PaginatedSearchModel paginatedSearch)
+        public async Task<IActionResult> GetAllDoctors([FromQuery] PaginatedSearchModel paginatedSearch)
         {
-            return Ok(await adminService.GetAllDoctors(paginatedSearch));
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            return Ok(await _doctorService.GetAllDoctors(paginatedSearch));
         }
 
-        [HttpPut("Doctor/Edit")]
+        [HttpPut("EditDoctor")]
         public async Task<IActionResult> EditDoctor([FromQuery] string id, [FromBody] CreateDoctorModelDto newDoctorInfo)
         {
             if (ModelState.IsValid && !id.IsNullOrEmpty())
             {
-                Doctor user = await adminService.EditDoctor(id, newDoctorInfo);
+                Doctor user = await _doctorService.EditDoctor(id, newDoctorInfo);
                 if (user == null) return NotFound("User Not found");
-                //DoctorModel d = _mapper.Map<DoctorModel>(user);
                 return Ok(user);
             }
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("Doctor/Delete")]
+        [HttpDelete("DeleteDoctor")]
         public async Task<IActionResult> DeleteDoctor([FromQuery] string id)
         {
             if (!id.IsNullOrEmpty())
             {
-                return Ok(await adminService.DeleteDoctor(id));
+                return Ok(await _doctorService.DeleteDoctor(id));
             }
             return NotFound();
         }
@@ -93,12 +98,13 @@ namespace Vezeeta.Api.Controllers
         //--------------------------------------------------------------Patients------------------------------------------//
         [HttpGet("GetPatient")]
         public async Task<IActionResult> GetPatient([FromQuery] string id) 
-        { return Ok(await adminService.GetPatientById(id)); }
+        { return Ok(await _patientService.GetPatientById(id)); }
 
         [HttpGet("SearchForPatients")]
-        public async Task<IActionResult> GetAllPatients(PaginatedSearchModel paginatedSearch) 
+        public async Task<IActionResult> GetAllPatients([FromQuery] PaginatedSearchModel paginatedSearch)
         {
-            return Ok(await adminService.GetAllPatients(paginatedSearch)); 
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            return Ok(await _patientService.GetAllPatients(paginatedSearch)); 
         }
 
 
@@ -108,7 +114,7 @@ namespace Vezeeta.Api.Controllers
         
             if(ModelState.IsValid)
             {
-                if(await adminService.AddDiscountCode(discountCode))
+                if(await _discountCodeService.AddDiscountCode(discountCode))
                     return Ok();
                 else
                     return BadRequest();
@@ -121,7 +127,7 @@ namespace Vezeeta.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await adminService.UpdateDiscountCode(discountId, discountCode))
+                if (await _discountCodeService.UpdateDiscountCode(discountId, discountCode))
                     return Ok();
                 else
                     return BadRequest();
@@ -134,7 +140,7 @@ namespace Vezeeta.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await adminService.DeleteDiscountCode(discountId))
+                if (await _discountCodeService.DeleteDiscountCode(discountId))
                     return Ok();
                 else
                     return BadRequest();
@@ -147,7 +153,7 @@ namespace Vezeeta.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await adminService.DeactivateDiscountCode(discountId))
+                if (await _discountCodeService.DeactivateDiscountCode(discountId))
                     return Ok();
                 else
                     return BadRequest();

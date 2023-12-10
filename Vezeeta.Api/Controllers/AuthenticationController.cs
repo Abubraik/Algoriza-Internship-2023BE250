@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Vezeeta.Sevices.Helpers;
 using Vezeeta.Sevices.Models;
 using Vezeeta.Sevices.Models.DTOs;
@@ -26,17 +27,18 @@ namespace Vezeeta.Api.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             var response = await _userManagementService.CreateUserAsync(model,_password,User);
-            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email,_password, response.Response))
+            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email,_password, response.Response!))
                                       : BadRequest(response.Message);
         }
 
-        [HttpPost("Admin/RegisterDoctor")]
+        [Authorize(Roles ="Admin")]
+        [HttpPost("/api/Admin/RegisterDoctor")]
         public async Task<IActionResult> RegisterDoctor([FromForm]CreateDoctorModelDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var response = await _userManagementService.CreateUserAsync(model, _password,User);
-            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email, _password, response.Response))
+            return response.IsSuccess ? Ok(CreateRegistrationResponse(model.Email, _password, response.Response!))
                                       : BadRequest(response.Message);
         }
 
@@ -45,16 +47,16 @@ namespace Vezeeta.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var (isSuccess, message) = await _userManagementService.AuthenticateUserAsync(model,User);
-            return isSuccess ? Ok(message) : BadRequest(message);
+            var (isSuccess, message) = await _userManagementService.AuthenticateUserAsync(model, User);
+            return isSuccess ? Ok(new { Token = message }) : BadRequest(message);
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            var (isSuccess, message) = await _userManagementService.LogoutUserAsync(User);
-            return isSuccess ? Ok(message) : BadRequest(message);
-        }
+        //[HttpPost("logout")]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    var (isSuccess, message) = await _userManagementService.LogoutUserAsync(User);
+        //    return isSuccess ? Ok(message) : BadRequest(message);
+        //}
 
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)

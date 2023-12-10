@@ -7,13 +7,11 @@ namespace Vezeeta.Core.Models.Users
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
         [Required]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
         [Required]
         public override string Email { get; set; }
-        //[Required]
-        //public override string PhoneNumber { get; set; }
 
 
         [Required]

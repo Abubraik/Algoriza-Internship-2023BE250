@@ -8,9 +8,9 @@ namespace Vezeeta.Sevices.Models.DTOs
         [JsonIgnore]
         public int SlotId { get; set; }
         [Required]
-        public string StartTime { get; set; }
+        public required string StartTime { get; set; }
         [Required]
-        public string EndTime { get; set; }
+        public required string EndTime { get; set; }
     }
 
 }

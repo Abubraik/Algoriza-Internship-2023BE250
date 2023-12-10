@@ -73,12 +73,12 @@ namespace Vezeeta.Sevices.Services
             <h2>Your Password: {password}</h2><br>
             <h3>Please use this <a href=""{link}"">Link</a> to confirm your email</h3>";
             }
-            else if (type == "BookingConfirmation")
+            else if (type == "Booking Confirmation")
             {
                 content = $@"<h3>Your Booking Number {password} has been successfully booked</h3>
 <h4> ThankYou for trusting Vezeeta.";
             }
-            else if (type == "BookinCancelation")
+            else if (type == "BookingCancelation")
             {
                 content = $"<h3>Your Booking Number {password} has been cancelled</h3>";
             }

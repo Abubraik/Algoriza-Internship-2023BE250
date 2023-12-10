@@ -2,7 +2,7 @@
 {
     public class SpecializationDTO
     {
-        public string SpecializationName { get; set; }
+        public required string SpecializationName { get; set; }
         public int RequestCount { get; set; }
     }
 }

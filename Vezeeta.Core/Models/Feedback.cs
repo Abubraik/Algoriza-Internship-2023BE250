@@ -8,18 +8,18 @@ namespace Vezeeta.Core.Models
         [Key]
         public int FeedbackId { get; set; }
         [Required]
-        public string PatientFeedback { get; set; }
+        public required string PatientFeedback { get; set; }
         [Required]
         public int Rating { get; set; }
 
         [Required]
         public int BookingId { get; set; }
-        public Booking Booking { get; set; }
+        public required Booking Booking { get; set; }
         [Required]
-        public string PatientId { get; set; }
-        public Patient Patient { get; set; }
+        public required string PatientId { get; set; }
+        public required Patient Patient { get; set; }
         [Required]
-        public string DoctorId { get; set; }
-        public Doctor Doctor { get; set; }
+        public required string DoctorId { get; set; }
+        public required Doctor Doctor { get; set; }
     }
 }

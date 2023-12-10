@@ -206,7 +206,7 @@ namespace Vezeeta.Repository.Migrations
                     b.HasIndex("DoctorId")
                         .IsUnique();
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Booking", b =>
@@ -252,7 +252,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("TimeSlotId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DaySchedule", b =>
@@ -273,7 +273,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("DaySchedules");
+                    b.ToTable("DaySchedules", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.DiscountCode", b =>
@@ -303,7 +303,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasKey("DiscountCodeId");
 
-                    b.ToTable("DiscountCode");
+                    b.ToTable("DiscountCode", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Feedback", b =>
@@ -341,7 +341,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Specialization", b =>
@@ -358,7 +358,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasKey("SpecializationId");
 
-                    b.ToTable("Specializations");
+                    b.ToTable("Specializations", (string)null);
 
                     b.HasData(
                         new
@@ -537,7 +537,7 @@ namespace Vezeeta.Repository.Migrations
 
                     b.HasIndex("DayScheduleId");
 
-                    b.ToTable("TimeSlots");
+                    b.ToTable("TimeSlots", (string)null);
                 });
 
             modelBuilder.Entity("Vezeeta.Core.Models.Users.ApplicationUser", b =>

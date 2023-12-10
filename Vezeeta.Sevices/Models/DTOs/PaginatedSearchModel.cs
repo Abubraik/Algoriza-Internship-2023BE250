@@ -5,10 +5,12 @@ namespace Vezeeta.Sevices.Models.DTOs
     public class PaginatedSearchModel
     {
         [Required]
-        public int pageSize;
+        public int PageNumber { get; set; }
         [Required]
-        public int pageNumber;
+        public int PageSize { get; set; }
+
         [Required]
-        public required string search;
+        public required string Search { get; set; }
+
     }
 }

@@ -8,9 +8,10 @@ namespace Vezeeta.Sevices.Models.DTOs
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Specialize { get; set; }
+        public string? Specialize { get; set; }
         public decimal Price { get; set; }
         public string Gender { get; set; }
+        public DateOnly DateOfBirth { get; set; }
         public List<AppointmentInfoDto>? Appointments { get; set; }
         public DoctorInfoDto()
         {
@@ -21,11 +22,11 @@ namespace Vezeeta.Sevices.Models.DTOs
             Image = doctor.Photo;
             FullName = $"{doctor.FirstName} {doctor.LastName}";
             Email = doctor.Email;
-            Phone = doctor.PhoneNumber;
+            Phone = doctor.PhoneNumber!;
             Specialize = doctor.Specialization?.Name;
             Price = doctor.Appointments.Price;
             Gender = doctor.Gender.ToString();
-            Appointments = doctor.Appointments.DaySchedules.Select(ds => new AppointmentInfoDto(ds)).ToList();
+            Appointments = doctor.Appointments.DaySchedules.Select(ds => new AppointmentInfoDto(ds))?.ToList();
         }
     }
 

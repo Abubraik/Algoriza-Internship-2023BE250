@@ -20,7 +20,7 @@ namespace Vezeeta.Sevices.Models.DTOs
             Image = doctorInfo.Image;
             DoctorName = doctorInfo.FullName;
             Specialization = doctorInfo.Specialize;
-            Day = booking.Doctor.Appointments.DaySchedules.Where(d => d.TimeSlots.Any(t => t.StartTime == booking.TimeSlot.StartTime)).FirstOrDefault().DayOfWeek.ToString();
+            Day = booking.Doctor.Appointments.DaySchedules.FirstOrDefault(d => d.TimeSlots.Any(t => t.StartTime == booking.TimeSlot.StartTime)).DayOfWeek.ToString();
             Time = booking.TimeSlot.StartTime;
             Price = booking.Price;
             DiscountCode = booking.DiscountCode?.Code;
