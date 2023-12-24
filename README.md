@@ -1,7 +1,7 @@
-# Algoriza-Internship-2023BE250
+# Vezeeta-Web-API
 
 ## Overview
-Algoriza-Internship-2023BE250 is a .NET Core Web API project simulating vezeeta.com. It's designed with onion architecture, ensuring adherence to clean code principles and SOLID design. The API supports three roles: admin, doctor, and patient, each with specific functionalities. It features JWT authentication and email confirmation.
+Vezeeta-Web-API is a .NET Core Web API project simulating vezeeta.com. It's designed with onion architecture, ensuring adherence to clean code principles and SOLID design. The API supports three roles: admin, doctor, and patient, each with specific functionalities. It features JWT authentication and email confirmation.
 
 ## Features
 
