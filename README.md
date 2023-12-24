@@ -30,6 +30,8 @@ Algoriza-Internship-2023BE250 is a .NET Core Web API project simulating vezeeta.
 - Entity Framework
 - JWT for authentication
 - Onion Architecture
+## Database Diagram
+![image](https://github.com/Abubraik/Algoriza-Internship-2023BE250/assets/69948865/ce6f4d84-9f42-4c15-bea5-0250d98c3fb4)
 
 ## Setup and Installation
 Just install .NET Framework 7, clone the project and have fun.
